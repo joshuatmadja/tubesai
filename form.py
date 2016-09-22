@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import *
-from tkinter import ttk 
+from tkinter import ttk
 
 class form(tkinter.Tk):
 	def __init__(self, parent):
