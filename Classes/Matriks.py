@@ -3,12 +3,12 @@ class Matriks:
     col = 0
 
     def __init__(self, r = row, c = col):
-        row = r
-        col = c
+        self.row = r
+        self.col = c
         self.matriks = []
-        for i in range(row):
+        for i in range(self.row):
             self.matriks.append([])
-            for j in range(col):
+            for j in range(self.col):
                 self.matriks[i].append([])
 
     def conflict_count(self):
@@ -18,3 +18,6 @@ class Matriks:
                 cnt = len(jam)
                 total += cnt * (cnt-1) / 2
         return total
+
+    def __str__(self):
+        return (str(self.row) + ' ' + str(self.col) + ' ' + str(self.matriks))

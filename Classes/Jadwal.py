@@ -43,7 +43,5 @@ class Jadwal:
         self.process_ruangan_dan_mata_kuliah(ruangan_raw, mata_kuliah_raw)
 
     def __init__(self, nama_file):
-        daftar_ruangan = []
-        daftar_mata_kuliah = []
         self.init_file(nama_file)
-        self.matriks = Matriks(len(daftar_ruangan), 115)
+        self.matriks = Matriks(len(self.daftar_ruangan), 120)
