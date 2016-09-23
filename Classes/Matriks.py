@@ -1,10 +1,14 @@
 class Matriks:
-    def __init__(self, row, col):
+    row = 0
+    col = 0
+
+    def __init__(self, r = row, c = col):
+        row = r
+        col = c
         self.matriks = []
-    def init(self, row, col):
-        for i in row:
+        for i in range(row):
             self.matriks.append([])
-            for j in col:
+            for j in range(col):
                 self.matriks[i].append([])
 
     def conflict_count(self):
