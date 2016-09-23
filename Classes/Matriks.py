@@ -2,9 +2,11 @@ class Matriks:
     row = 0
     col = 0
 
-    def __init__(self, r = row, c = col):
-        self.row = r
-        self.col = c
+    def __init__(self, r = None, c = None):
+        if r is not None:
+            self.row = r
+        if c is not None:
+            self.col = c
         self.matriks = []
         for i in range(self.row):
             self.matriks.append([])
