@@ -6,7 +6,9 @@ from .MatKulOnlyTime import MatKulOnlyTime
 class Jadwal:
     daftar_ruangan = []
     daftar_mata_kuliah = []
+    total_pasangan = 0
     def process_ruangan_dan_mata_kuliah(self, ruangan_raw, mata_kuliah_raw):
+
         for ruangan in ruangan_raw:
             temp = ruangan.split(';')
             temp[3] = temp[3].split(',')
@@ -18,8 +20,14 @@ class Jadwal:
             temp = mata_kuliah.split(';')
             temp[5] = temp[5].split(',')
             temp_mata_kuliah = MatKul(temp[0], temp[1], int(float(temp[2])), int(float(temp[3])), int(temp[4]), temp[5])
-
             self.daftar_mata_kuliah.append(temp_mata_kuliah)
+
+        n = len(self.daftar_mata_kuliah)
+        temp_total = 0
+        for i in range(0,n):
+            total_pasangan += temp_total * self.daftar_mata_kuliah[i].sks
+            temp_total += self.daftar_mata_kuliah[i].sks
+        total_pasangan += 1
 
     def read_file(self,ruangan_raw, mata_kuliah_raw, nama_file):
         f = open(nama_file, "r")
