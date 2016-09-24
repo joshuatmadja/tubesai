@@ -14,19 +14,18 @@ class Genetic:
             t = 0
             for ruangan in Jadwal.daftar_ruangan:
                 if(mkot == ruangan.nama):
-                    awal = (mkot.h_selected-1) * 24 + (mkot.j_selected - 7)
+                    awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
                     for i in range(awal, awal + sks):
                         M[t][i].append(mkot)
                     break
                 else:
                     t += 1
-
         return Jadwal.total_pasangan - M.conflict_count()
 
     # mutate ini dilakukan abis chromosomenya digabungin
     def mutate(self, chromosome):
-        pass # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
+        pass # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
     def selectidx(self, n, fitness_total, r_num):
         now = 0
@@ -45,9 +44,11 @@ class Genetic:
             fitness_total = []
             n = len(self.inputs)
 
+            # calculate total fitness
             for chromosome in self.inputs:
                 fitness_total.append(self.fitness(chromosome))
 
+            # sort based on fitness_total
             for i in range(n):
                 for j in range(n-i):
                     if (fitness_total[j] > fitness_total[j+1]):
@@ -56,7 +57,7 @@ class Genetic:
 
             pivot = randint(1, len(Jadwal.daftar_mata_kuliah))
 
-            # bagian ini nanti diubah lagi
+            # calculate the total chance
             total_chance = 0
             for i in range(n):
                 total_chance += fitness_total[i]
