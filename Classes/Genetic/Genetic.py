@@ -24,7 +24,7 @@ class Genetic:
 
     # mutate ini dilakukan abis chromosomenya digabungin
     def mutate(self, chromosome):
-
+        
         pass # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
     def selectidx(self, n, fitness_total, r_num):
