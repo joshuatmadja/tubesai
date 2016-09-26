@@ -7,7 +7,7 @@ class SimulatedAnnealing:
 
 	# Acceptance function, energy represent conflict_count
 	def acceptance_function(self, current_energy, new_energy, temperature):
-		if (new_energy < current_energy):
+		if (new_energy <= current_energy):
 			return 1
 		else:
 			return math.exp((current_energy - new_energy) / temperature)
