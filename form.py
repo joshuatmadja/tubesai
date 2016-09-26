@@ -190,9 +190,11 @@ class form(Frame):
 		hasil.append(self.entryRuangVariable.get())
 		hasil.append(self.entryJamMulaiVar.get())
 		hasil.append(self.entryJamSelesaiVar.get())
+		hari = []
 		for j in range(5):
 			if(self.checkR[j].get()==1):
-				hasil.append(j+1)
+				hari.append(j+1)
+		hasil.append(hari)
 		tup = tuple(hasil)
 		self.rooms.append(tup)
 		self.nRoom+=1
@@ -231,15 +233,15 @@ class form(Frame):
 		hasil.append(self.entryJamMulaiJVar.get())
 		hasil.append(self.entryJamSelesaiJVar.get())
 		hasil.append(self.sks.get())
+		hari = []
 		for j in range(5):
 			if(self.checkS[j].get()==1):
-				hasil.append(j+1)
+				hari.append(j+1)
+		hasil.append(hari)
 		tup = tuple(hasil)
 		self.schedules.append(tup)
 		self.nSchedule+=1
-		print(tup)
-		print(liatJadwal)
-		
+		print(tup)		
 
 		self.entryScheduleVar.set('')
 		self.sks.set(0)
