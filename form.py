@@ -4,21 +4,21 @@ from tkinter import ttk
 from tkinter import messagebox
 
 Days = ('Senin','Selasa','Rabu','Kamis','Jumat')
-class form(tkinter.Tk):
-	nRoom = 0
-	nSchedule = 0
-	rooms = []
-	schedules = []
-	
+class form(Frame):
 	
 	def __init__(self, parent):
-		tkinter.Tk.__init__(self,parent)
+		Frame.__init__(self,parent)
 		self.parent = parent
+		self.parent.title('AI berDARAH')
+		self.nRoom = 0
+		self.nSchedule = 0
+		self.rooms = []
+		self.schedules = []
 		self.mulai()
 
 	def mulai(self):
 		self.grid()
-		self.resizable(False,False)
+		#self.resizable(False,False)
 
 		#frame ruangan
 		frRuang = ttk.Frame(self, padding="10 10 10 10", borderwidth= 2, relief = "solid")
@@ -137,7 +137,9 @@ class form(tkinter.Tk):
 		printR.grid(column=0, row =1,columnspan=2, sticky="n")
 		printJ = tkinter.Button(self, text=u"Cetak Jadwal", command=self.onClickPrintSchedule)
 		printJ.grid(column=0, row=2, columnspan=2, sticky="n")
-		printRes = tkinter.Button(self, text=u"Hasilkan", command=self.onClickShow)
+		printHC = tkinter.Button(self, text=u"Hill Climbing").grid(column=0, row=3)
+		printGA = tkinter.Button(self, text=u"Genetic Algorithm").grid(column=1, row=3)
+		printRes = tkinter.Button(self, text=u"Simulated Annealing", command=self.onClickShow)
 		printRes.grid(column=0, row=3, columnspan=2, sticky="n")
 
 	def selectingRuang(self):
@@ -154,22 +156,32 @@ class form(tkinter.Tk):
 		elif(self.entryJamMulaiVar.get()>=self.entryJamSelesaiVar.get()):
 			msg = messagebox.showinfo("Kesalahan", "Jam mulai harus lebih awal daripada jam selesai")
 			self.entryJamMulai.focus_set()
+			self.entryJamMulai.selection_range(0,tkinter.END)
 		else:
 			self.onClickRoom()
 
 	def validateJadwal(self):
+		liatJadwal = []
+		for i in range(5):
+			liatJadwal.append(self.checkS[i].get())
+
 		if(self.entryScheduleVar.get()==''):
 			msg = messagebox.showinfo("Kesalahan", "Kode mata kuliah harus diisi")
 			self.entrySchedule.focus_set()
+			self.entrySchedule.selection_range(0,tkinter.END)
 		elif(self.sks.get()<=0):
 			msg = messagebox.showinfo("Kesalahan", "SKS harus lebih dari 0")
 			self.entrySKS.focus_set()
+			self.entrySKS.selection_range(0,tkinter.END)
 		elif(self.roomFree.get()==1 and self.entryRoomVar.get()==''):
 			msg = messagebox.showinfo("Kesalahan", "Ruangan spesifik tidak boleh kosong")
 			self.entryRoom.focus_set()
 		elif(self.entryJamMulaiJVar.get()>=self.entryJamSelesaiJVar.get()):
 			msg = messagebox.showinfo("Kesalahan", "Jam mulai harus lebih awal daripada jam selesai")
 			self.entryJamMulaiJ.focus_set()
+			self.entrySchedule.selection_range(0,tkinter.END)
+		elif(liatJadwal==[0,0,0,0,0]):
+			msg = messagebox.showinfo("Kesalahan", "Jadwal minimal punya satu hari perkuliahan")
 		else:
 			self.onClickSchedule()
 
@@ -198,11 +210,16 @@ class form(tkinter.Tk):
 		print(self.rooms)
 
 	def onClickShow(self):
-		app = result(None)
-		app.title('Result')
-		app.mainloop()
+		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules]
+		app = Toplevel(self.parent)
+		childWindow = result(app, dataPass, self)
+		#app.title('Result')
+		#print(self.nRoom)
 
 	def onClickSchedule(self):
+		liatJadwal=[]
+		for i in range(5):
+			liatJadwal.append(self.checkS[i].get())
 		hasil = []
 		hasil.append(self.entryScheduleVar.get())
 
@@ -221,6 +238,8 @@ class form(tkinter.Tk):
 		self.schedules.append(tup)
 		self.nSchedule+=1
 		print(tup)
+		print(liatJadwal)
+		
 
 		self.entryScheduleVar.set('')
 		self.sks.set(0)
@@ -236,23 +255,62 @@ class form(tkinter.Tk):
 		print('Jadwal terkumpul:')
 		print(self.schedules)
 
-class result(tkinter.Tk):
-	def __init__(self,parent):
-		tkinter.Tk.__init__(self,parent)
+
+class result(Frame):
+
+	def __init__(self,parent,list,app):
+		Frame.__init__(self,parent)
 		self.parent=parent
+		self.list=list
+		self.app=app
+		self.parent.title('RESULT')
 		self.mulai()
+		#self.jumlahRuang = jumlahRuang
+		#self.jumlahJadwal = jumlahJadwal
 
 	def mulai(self):
-		tabel = ttk.Treeview(self)
-		tabel.grid(column=0, row=3, columnspan=2)
+		self.nRoom = self.list[0]
+		self.nSchedule = self.list[1]
+		self.rooms = self.list[2]
+		self.schedules = self.list[3]
+
+
+		tabel = ttk.Treeview(self.parent)
+		tabel.grid(column=0, row=0,columnspan=2)
 		Time = ('07:00', '08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00')
 
+		tabel.column("#0",width=100)
+		tabel.heading("#0", text="Ruangan")
 		tabel["columns"]=Time
 		for d in Time:
 			tabel.column(d,width=70)
 			tabel.heading(d, text=d)
 
+		print(self.nRoom)
+		for j in range(self.nRoom):
+			namaRuang = self.rooms[j][0]
+			idRuang = "r"+str(j)
+			print(idRuang)
+			tabel.insert("",j, idRuang, text=namaRuang)
+			i=0
+			for d in Days:
+				tabel.insert(idRuang,i,text=d,values=Time)
+				i+=1
+
+		self.numberofConflicts=IntVar()
+		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=1, sticky="e")
+		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=1, sticky="w")
+		self.numberofConflicts.set(0)
+
+	def setRuang(self,value):
+		self.jumlahRuang=value
+
+	def setJadwal(self,value):
+		self.jumlahJadwal=value
+
+
 if __name__ == "__main__":
-	app = form(None)
-	app.title('AI berDARAH')
-	app.mainloop()
+	root = Tk()
+	app = form(root)
+	#app.title('AI berDARAH')
+	root.mainloop()
