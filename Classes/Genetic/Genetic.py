@@ -11,37 +11,60 @@ class Genetic:
     def fitness(self, chromosome):
         M = Matriks()
         for mkot in chromosome:
-            t = 0
-            for ruangan in Jadwal.daftar_ruangan:
-                if(mkot.r_selected == ruangan.nama):
-                    awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
-                    for i in range(awal, awal + sks):
-                        M[t][i].append(mkot)
-                    break
-                else:
-                    t += 1
+            awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
+            for i in range(awal, awal + sks):
+                M[mkot.r_selected][i].append(mkot)
+
         return Jadwal.total_pasangan - M.conflict_count()
 
     # mutate ini dilakukan abis chromosomenya digabungin
+    def random_assign(self, x):
+
+        bisa = False
+        MBaru = MatKulOnlyTime()
+        COMB_PER_HARI = Jadwal.daftar_mata_kuliah[x].akhir - Jadwal.daftar_mata_kuliah[x].awal - Jadwal.daftar_mata_kuliah[x].sks + 1
+        JUMLAH_HARI = len(Jadwal.daftar_mata_kuliah[x].hari)
+        comb_waktu = COMB_PER_HARI * JUMLAH_HARI
+        urut_waktu = []
+        for i in range(comb_waktu):
+            urut_waktu.append(i)
+
+        shuffle(urut_waktu)
+        if(Jadwal.daftar_mata_kuliah[x].ruangan == '-'):
+            urut_ruangan = []
+            comb_ruangan = len(Jadwal.daftar_ruangan)
+
+            for i in range(comb_ruangan):
+                urut_ruangan.append(i)
+
+            shuffle(urut_ruangan)
+            for ruangan_selected in urut_ruangan:
+                if bisa:
+                    break
+                for z in urut_waktu:
+                    hari_selected = Jadwal.daftar_mata_kuliah[x].hari[z / COMB_PER_HARI]
+                    jam_selected = Jadwal.daftar_mata_kuliah[x].awal + (z % COMB_PER_HARI) - 1
+                    temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
+                    if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.akhir):
+                        MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
+                        break
+        else:
+            ruangan_selected = Jadwal.daftar_ruangan.index(Jadwal.daftar_mata_kuliah[x].ruangan)
+            for z in urut_waktu:
+                hari_selected = Jadwal.daftar_mata_kuliah[x].hari[z / COMB_PER_HARI]
+                jam_selected = Jadwal.daftar_mata_kuliah[x].awal + (z % COMB_PER_HARI) - 1
+                temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
+                if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.akhir):
+                    MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
+                    break
+        return MBaru
+
     def mutate(self, chromosome):
         panjang = len(chromosome)
         bnyk = math.ceil(panjang / 20)
         for i in range(bnyk):
             x = randint(0, panjang - 1)
-            bisa = False
-            Mbaru = MatKulOnlyTime()
-
-            comb = (Jadwal.daftar_mata_kuliah[x].akhir - Jadwal.daftar_mata_kuliah[x].awal - chromosome[x].sks + 1) * len(Jadwal.daftar_mata_kuliah[x].hari)
-            urut = []
-            for i in range(comb):
-                urut.append(i)
-
-            for i in range()
-                if(Jadwal.daftar_mata_kuliah[x].ruangan == '-'):
-                    pass
-                else:
-                    pass
-            chromosome[x] = Mbaru
+            chromosome[x] = self.random_assign(x)
         # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
     def selectidx(self, n, fitness_total, r_num):
@@ -95,7 +118,14 @@ class Genetic:
 
     @staticmethod
     def init(self):
-        pass
+        self.inputs = []
+        self.result = []
+        banyak = 10
+        n = len(Jadwal.daftar_mata_kuliah)
+        for i in range(banyak):
+            self.inputs.append([])
+            for x in range(n):
+                self.inputs[i].append(self.random_assign(x))
 
     @staticmethod
     def add(self, jadwal):
