@@ -1,6 +1,6 @@
-from .MatKulOnlyTime import MatKulOnlyTime
-from .Matriks import Matriks
-from .Jadwal import Jadwal
+from ..MatKulOnlyTime import MatKulOnlyTime
+from ..Matriks import Matriks
+from ..Jadwal import Jadwal
 from random import randint, shuffle
 
 class Genetic:
