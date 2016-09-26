@@ -6,13 +6,13 @@ from .Matriks import Matriks
 class SimulatedAnnealing:
 	
 	# Acceptance function, energy represent conflict_count
-	def acceptance_function(current_energy, new_energy, temperature):
+	def acceptance_function(self, current_energy, new_energy, temperature):
 		if (new_energy < current_energy):
 			return 1
 		else:
 			return math.exp((current_energy - new_energy) / temperature)
 
-	def calculate()
+	def calculate(self)
 
 		# Looping - simulated annealing main point
 		while temperature > 1 and least_conflict > 0:
@@ -22,7 +22,7 @@ class SimulatedAnnealing:
 			new_conflict = new_solution.conflict_count()
 			
 			# Decide & keep best solution
-			if (acceptance_function(least_conflict, new_conflict, temperature) >= random.randrange(0, 1)):
+			if (self.acceptance_function(least_conflict, new_conflict, temperature) >= random.randrange(0, 1)):
 				current_solution = new_solution
 				least_conflict = new_conflict
 			
