@@ -3,6 +3,7 @@ from ..Matriks import Matriks
 from ..Jadwal import Jadwal
 from random import randint, shuffle
 from math import ceil
+
 class Genetic:
     inputs = []
     result = []

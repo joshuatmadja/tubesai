@@ -1,6 +1,7 @@
 from .Ruangan import Ruangan
 from .MatKul import MatKul
 from .Matriks import Matriks
+from .MatKulOnlyTime import MatKulOnlyTime
 
 class Jadwal:
     daftar_ruangan = []
