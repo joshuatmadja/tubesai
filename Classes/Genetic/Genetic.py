@@ -2,7 +2,7 @@ from ..MatKulOnlyTime import MatKulOnlyTime
 from ..Matriks import Matriks
 from ..Jadwal import Jadwal
 from random import randint, shuffle
-
+from math import ceil
 class Genetic:
     inputs = []
     result = []
@@ -13,7 +13,7 @@ class Genetic:
         for mkot in chromosome:
             t = 0
             for ruangan in Jadwal.daftar_ruangan:
-                if(mkot == ruangan.nama):
+                if(mkot.r_selected == ruangan.nama):
                     awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
                     for i in range(awal, awal + sks):
                         M[t][i].append(mkot)
@@ -24,8 +24,25 @@ class Genetic:
 
     # mutate ini dilakukan abis chromosomenya digabungin
     def mutate(self, chromosome):
-        
-        pass # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
+        panjang = len(chromosome)
+        bnyk = math.ceil(panjang / 20)
+        for i in range(bnyk):
+            x = randint(0, panjang - 1)
+            bisa = False
+            Mbaru = MatKulOnlyTime()
+
+            comb = (Jadwal.daftar_mata_kuliah[x].akhir - Jadwal.daftar_mata_kuliah[x].awal - chromosome[x].sks + 1) * len(Jadwal.daftar_mata_kuliah[x].hari)
+            urut = []
+            for i in range(comb):
+                urut.append(i)
+
+            for i in range()
+                if(Jadwal.daftar_mata_kuliah[x].ruangan == '-'):
+                    pass
+                else:
+                    pass
+            chromosome[x] = Mbaru
+        # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
     def selectidx(self, n, fitness_total, r_num):
         now = 0
@@ -88,6 +105,7 @@ class Genetic:
     def best(self):
         return self.result[-1]
 
+    @staticmethod
     def sort(self):
         fitness_total = []
         n = len(self.inputs)
