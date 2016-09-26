@@ -21,8 +21,8 @@ class form(Frame):
 		#self.resizable(False,False)
 
 		#frame ruangan
-		frRuang = ttk.Frame(self, padding="10 10 10 10", borderwidth= 2, relief = "solid")
-		frRuang.grid(sticky="NWES", padx=(10,10), pady=(10,10))
+		frRuang = ttk.Frame(self.parent, borderwidth= 2, relief = "solid")
+		frRuang.grid(column=0, row=0,sticky="NWES", padx=(10,10), pady=(10,10))
 		#frRuang.columnconfigure(0, weight=1)
 		#frRuang.rowconfigure(0, weight=1)
 
@@ -51,13 +51,13 @@ class form(Frame):
 		labelJam.grid(column=2, row = 1, sticky ="w", padx=(30,0))
 
 		self.entryJamMulaiVar = tkinter.IntVar()
-		self.entryJamMulai = tkinter.Entry(frRuang, textvariable=self.entryJamMulaiVar, width = 3, justify="right")
+		self.entryJamMulai = tkinter.Spinbox(frRuang, textvariable=self.entryJamMulaiVar, from_=0, to=22, width = 3, justify="right")
 		self.entryJamMulai.grid(column=3, row=1, sticky="w")
 		label00 = tkinter.Label(frRuang, text=": 00 -", anchor="w")
 		label00.grid(column=4, row=1, sticky = "w")
 
 		self.entryJamSelesaiVar = tkinter.IntVar()
-		self.entryJamSelesai = tkinter.Entry(frRuang, textvariable=self.entryJamSelesaiVar, width = 3, justify="right")
+		self.entryJamSelesai = tkinter.Spinbox(frRuang, textvariable=self.entryJamSelesaiVar, from_=1, to=23, width = 3, justify="right")
 		self.entryJamSelesai.grid(column=5, row=1, sticky="w")
 		label00_ = tkinter.Label(frRuang, text=": 00", anchor="w")
 		label00_.grid(column=6, row=1, sticky = "w")
@@ -68,7 +68,13 @@ class form(Frame):
 		buttonRuangan = tkinter.Button(frRuang,text=u"Submit Ruangan",command=self.validateRuang)
 		buttonRuangan.grid(column=0, row=9, columnspan=9, padx=(10,10), pady=(10,0), sticky="s")
 
-		frJadwal = ttk.Frame(self,padding="10 10 10 10", borderwidth=2, relief="solid")
+		labelHapusR = tkinter.Label(frRuang, text=u"Hapus Ruangan").grid(column=0, row=10, columnspan=2, pady=(20,0),sticky="e")
+		self.delRuang=tkinter.IntVar()
+		self.delRuangBox = tkinter.Entry(frRuang, textvariable=self.delRuang, width=3, justify="right").grid(column=2, row=10, sticky="e",pady=(20,0))
+		self.delRuang.set(0)
+		buttonHapusR = tkinter.Button(frRuang, text=u"Hapus",command=self.onClickDeleteRuang).grid(column=3,row=10,padx=(5,0),pady=(20,0),columnspan=4)
+
+		frJadwal = ttk.Frame(self.parent, borderwidth=2, relief="solid")
 		frJadwal.grid(column=1, row=0, sticky="NESW", padx=(10,10),pady=(10,10))
 		#frJadwal.columnconfigure(0, weight=1)
 		#frJadwal.rowconfigure(0,weight=1)
@@ -83,8 +89,9 @@ class form(Frame):
 		labelJadwal = tkinter.Label(frJadwal, text=u"       SKS", anchor="w")
 		labelJadwal.grid(column=3,row=0, sticky="ne",columnspan=2)
 		self.sks = tkinter.IntVar()
-		self.entrySKS = tkinter.Entry(frJadwal,textvariable=self.sks, width=3,justify="right")
+		self.entrySKS = tkinter.Spinbox(frJadwal,textvariable=self.sks, width=3,justify="right", from_=2, to=4)
 		self.entrySKS.grid(column=5, row=0, sticky="nw")
+		self.sks.set(2)
 
 		labelRoom = tkinter.Label(frJadwal, text=u"Ruangan", anchor="w")
 		labelRoom.grid(column=0,row=1, sticky="nw")
@@ -111,18 +118,17 @@ class form(Frame):
 			self.SDay[i].grid(column=1, row=i+3,sticky="w")
 			i+=1
 
-
 		labelJamJ = tkinter.Label(frJadwal, text=u"Jam", anchor="w")
 		labelJamJ.grid(column=2, row = 3, sticky ="w", padx=(30,0))
 
 		self.entryJamMulaiJVar = tkinter.IntVar()
-		self.entryJamMulaiJ = tkinter.Entry(frJadwal, textvariable=self.entryJamMulaiJVar, width = 3, justify="right")
+		self.entryJamMulaiJ = tkinter.Spinbox(frJadwal, textvariable=self.entryJamMulaiJVar, from_=0, to=22, width = 3, justify="right")
 		self.entryJamMulaiJ.grid(column=3, row=3, sticky="w")
 		label00J = tkinter.Label(frJadwal, text=": 00 -", anchor="w")
 		label00J.grid(column=4, row=3, sticky = "w")
 
 		self.entryJamSelesaiJVar = tkinter.IntVar()
-		self.entryJamSelesaiJ = tkinter.Entry(frJadwal, textvariable=self.entryJamSelesaiJVar, width = 3, justify="right")
+		self.entryJamSelesaiJ = tkinter.Spinbox(frJadwal, textvariable=self.entryJamSelesaiJVar, width = 3, from_=1, to=23, justify="right")
 		self.entryJamSelesaiJ.grid(column=5, row=3, sticky="w")
 		label00J_ = tkinter.Label(frJadwal, text=": 00", anchor="w")
 		label00J_.grid(column=6, row=3, sticky = "w")
@@ -133,14 +139,25 @@ class form(Frame):
 		buttonJadwal = tkinter.Button(frJadwal,text=u"Submit Jadwal", command=self.validateJadwal)
 		buttonJadwal.grid(column=0, row=9, columnspan=9, padx=(10,10), pady=(10,0), sticky="s")
 
-		printR = tkinter.Button(self, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
-		printR.grid(column=0, row =1,columnspan=2, sticky="n")
-		printJ = tkinter.Button(self, text=u"Cetak Jadwal", command=self.onClickPrintSchedule)
-		printJ.grid(column=0, row=2, columnspan=2, sticky="n")
-		printHC = tkinter.Button(self, text=u"Hill Climbing").grid(column=0, row=3)
-		printGA = tkinter.Button(self, text=u"Genetic Algorithm").grid(column=1, row=3)
-		printRes = tkinter.Button(self, text=u"Simulated Annealing", command=self.onClickShow)
-		printRes.grid(column=0, row=3, columnspan=2, sticky="n")
+		labelHapusJ = tkinter.Label(frJadwal, text=u"Hapus Jadwal").grid(column=0, row=10, columnspan=2, pady=(20,0),sticky="e")
+		self.delJadwal=tkinter.IntVar()
+		self.delJadwalBox = tkinter.Entry(frJadwal, textvariable=self.delJadwal, width=3, justify="right").grid(column=2, row=10, sticky="e",pady=(20,0))
+		self.delJadwal.set(0)
+		buttonHapusR = tkinter.Button(frJadwal, text=u"Hapus").grid(column=3,row=10,padx=(5,0),pady=(20,0),columnspan=4)
+
+
+		labelPilihSolusi = tkinter.Label(self.parent,text=u"=======================PILIH SOLUSINYA=======================")
+		labelPilihSolusi.grid(row=2,pady=(5,0), sticky=N+E+S+W, columnspan=3)
+		printHC = tkinter.Button(self.parent, text=u"Hill Climbing").grid(column=0, row=3, pady=(5,10))
+		printGA = tkinter.Button(self.parent, text=u"Genetic Algorithm").grid(column=1, row=3,pady=(5,10))
+		printRes = tkinter.Button(self.parent, text=u"Simulated Annealing", command=self.onClickShow).grid(column=0, row=3, pady=(5,10), columnspan=2)
+		labelFrame = tkinter.Label(self.parent, text=u"==========================================================").grid(row=4, columnspan=2)
+
+		
+		printR = tkinter.Button(self.parent, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
+		printR.grid(column=0, row=1,pady=(10,20))
+		printJ = tkinter.Button(self.parent, text=u"Cetak Jadwal", command=self.onClickPrintSchedule)
+		printJ.grid(column=1, row=1, pady=(10,20))
 
 	def selectingRuang(self):
 		if(self.roomFree.get() == 0):
@@ -148,13 +165,14 @@ class form(Frame):
 		elif(self.roomFree.get()==1):
 			self.entryRoom.config(state="normal")
 
+
 	def validateRuang(self):
 		self.entryRuang.focus_set()
 		if(self.entryRuangVariable.get()==''):
-			msg = messagebox.showinfo("Kesalahan", "Ruangan harus diisi")
+			msg = messagebox.showerror("Kesalahan", "Ruangan harus diisi")
 			self.entryRuang.focus_set()
 		elif(self.entryJamMulaiVar.get()>=self.entryJamSelesaiVar.get()):
-			msg = messagebox.showinfo("Kesalahan", "Jam mulai harus lebih awal daripada jam selesai")
+			msg = messagebox.showerror("Kesalahan", "Jam mulai harus lebih awal daripada jam selesai")
 			self.entryJamMulai.focus_set()
 			self.entryJamMulai.selection_range(0,tkinter.END)
 		else:
@@ -166,22 +184,22 @@ class form(Frame):
 			liatJadwal.append(self.checkS[i].get())
 
 		if(self.entryScheduleVar.get()==''):
-			msg = messagebox.showinfo("Kesalahan", "Kode mata kuliah harus diisi")
+			msg = messagebox.showerror("Kesalahan", "Kode mata kuliah harus diisi")
 			self.entrySchedule.focus_set()
 			self.entrySchedule.selection_range(0,tkinter.END)
 		elif(self.sks.get()<=0):
-			msg = messagebox.showinfo("Kesalahan", "SKS harus lebih dari 0")
+			msg = messagebox.showerror("Kesalahan", "SKS harus lebih dari 0")
 			self.entrySKS.focus_set()
 			self.entrySKS.selection_range(0,tkinter.END)
 		elif(self.roomFree.get()==1 and self.entryRoomVar.get()==''):
-			msg = messagebox.showinfo("Kesalahan", "Ruangan spesifik tidak boleh kosong")
+			msg = messagebox.showerror("Kesalahan", "Ruangan spesifik tidak boleh kosong")
 			self.entryRoom.focus_set()
 		elif(self.entryJamMulaiJVar.get()>=self.entryJamSelesaiJVar.get()):
-			msg = messagebox.showinfo("Kesalahan", "Jam mulai harus lebih awal daripada jam selesai")
+			msg = messagebox.showerror("Kesalahan", "Jam mulai harus lebih awal daripada jam selesai")
 			self.entryJamMulaiJ.focus_set()
 			self.entrySchedule.selection_range(0,tkinter.END)
 		elif(liatJadwal==[0,0,0,0,0]):
-			msg = messagebox.showinfo("Kesalahan", "Jadwal minimal punya satu hari perkuliahan")
+			msg = messagebox.showerror("Kesalahan", "Jadwal minimal punya satu hari perkuliahan")
 		else:
 			self.onClickSchedule()
 
@@ -244,7 +262,7 @@ class form(Frame):
 		print(tup)		
 
 		self.entryScheduleVar.set('')
-		self.sks.set(0)
+		self.sks.set(2)
 		self.entryJamMulaiJVar.set(7)
 		self.entryRoomVar.set('')
 		self.roomFree.set(0)
@@ -257,6 +275,25 @@ class form(Frame):
 		print('Jadwal terkumpul:')
 		print(self.schedules)
 
+	def onClickDeleteRuang(self):
+		if(self.nRoom==0):
+			msg=messagebox.showerror('Kesalahan','Ruangan masih kosong')
+		elif(self.delRuang.get()>self.rooms.length):
+			msg=messagebox.showerror('Kesalahan','ID Ruangan tidak ditemukan')
+		elif(messagebox.askyesno('Konfirmasi','Anda yakin ingin menghapus ruangan '+self.rooms[self.delRuang.get()][0]+'?')):
+			print('Ruangan '+self.rooms[self.delRuang.get()][0]+' terhapus')
+			self.rooms.pop(self.delRuang.get())
+			self.nRoom-=1
+
+	def onClickDeleteJadwal(self):
+		if(self.nSchedule==0):
+			msg=messagebox.showerror('Kesalahan','Jadwal masih kosong')
+		elif(self.delJadwal.get()>self.schedules.length):
+			msg=messagebox.showerror('Kesalahan','ID Jadwal tidak ditemukan')
+		elif(messagebox.askyesno('Konfirmasi','Anda yakin ingin menghapus ruangan '+self.schedules[self.delJadwal.get()][0]+'?')):
+			print('Jadwal '+self.schedules[self.delJadwal.get()][0]+' terhapus')
+			self.schedules.pop(self.delJadwal.get())
+			self.nSchedule-=1
 
 class result(Frame):
 
