@@ -1,0 +1,3 @@
+rooms = [('namaRuangan',jamMulai,jamSelesai,[list hari hari]),....]
+
+schedules = [('namaJadwal','namaRuangan',jamMulai, jamSelesai, SKS, [list hari hari]),....]
