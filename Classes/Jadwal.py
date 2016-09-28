@@ -7,6 +7,7 @@ class Jadwal:
     daftar_ruangan = []
     daftar_mata_kuliah = []
     total_pasangan = 0
+
     def process_ruangan_dan_mata_kuliah(self, ruangan_raw, mata_kuliah_raw):
 
         for ruangan in ruangan_raw:
@@ -25,9 +26,9 @@ class Jadwal:
         n = len(self.daftar_mata_kuliah)
         temp_total = 0
         for i in range(0,n):
-            total_pasangan += temp_total * self.daftar_mata_kuliah[i].sks
+            self.total_pasangan += temp_total * self.daftar_mata_kuliah[i].sks
             temp_total += self.daftar_mata_kuliah[i].sks
-        total_pasangan += 1
+        self.total_pasangan += 1
 
     def read_file(self,ruangan_raw, mata_kuliah_raw, nama_file):
         f = open(nama_file, "r")
