@@ -1,29 +1,43 @@
 from ..MatKulOnlyTime import MatKulOnlyTime
 from ..Matriks import Matriks
 from ..Jadwal import Jadwal
-from random import randint, shuffle
+from random import randint, shuffle, seed
 from math import ceil
 
 class Genetic:
     inputs = []
     result = []
 
-    @staticmethod
-    def fitness(self, chromosome):
-        M = Matriks()
-        for mkot in chromosome:
-            awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
-            for i in range(awal, awal + sks):
-                M[mkot.r_selected][i].append(mkot)
+    def __init__(self):
+        if(Jadwal.total_pasangan == 0):
+            n = len(Jadwal.daftar_mata_kuliah)
+            temp_total = 0
+            for i in range(0,n):
+                Jadwal.total_pasangan += temp_total * Jadwal.daftar_mata_kuliah[i].sks
+                temp_total += Jadwal.daftar_mata_kuliah[i].sks
+            Jadwal.total_pasangan += 1
+        pass
 
-        return Jadwal.total_pasangan - M.conflict_count()
+    @classmethod
+    def fitness(self, chromosome):
+        M = Matriks(len(Jadwal.daftar_ruangan), 120)
+        #print ("CHROMOSOME : " + str(chromosome))
+        for mkot in chromosome:
+            #print ("MKOT " + str(mkot))
+            awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
+            for i in range(awal, awal + mkot.sks):
+                M.matriks[mkot.r_selected][i].append(mkot)
+        con = int(M.conflict_count())
+
+        return Jadwal.total_pasangan - int(M.conflict_count())
 
     # mutate ini dilakukan abis chromosomenya digabungin
+    @classmethod
     def random_assign(self, x):
 
         bisa = False
         MBaru = MatKulOnlyTime()
-        COMB_PER_HARI = Jadwal.daftar_mata_kuliah[x].akhir - Jadwal.daftar_mata_kuliah[x].awal - Jadwal.daftar_mata_kuliah[x].sks + 1
+        COMB_PER_HARI = Jadwal.daftar_mata_kuliah[x].jam_akhir - Jadwal.daftar_mata_kuliah[x].jam_awal - Jadwal.daftar_mata_kuliah[x].sks + 1
         JUMLAH_HARI = len(Jadwal.daftar_mata_kuliah[x].hari)
         comb_waktu = COMB_PER_HARI * JUMLAH_HARI
         urut_waktu = []
@@ -43,31 +57,36 @@ class Genetic:
                 if bisa:
                     break
                 for z in urut_waktu:
-                    hari_selected = Jadwal.daftar_mata_kuliah[x].hari[z / COMB_PER_HARI]
-                    jam_selected = Jadwal.daftar_mata_kuliah[x].awal + (z % COMB_PER_HARI) - 1
+                    hari_selected = Jadwal.daftar_mata_kuliah[x].hari[int(z / COMB_PER_HARI)]
+                    jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI) - 1
                     temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
-                    if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.akhir):
+                    if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.jam_awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.jam_akhir):
                         MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
                         break
         else:
-            ruangan_selected = Jadwal.daftar_ruangan.index(Jadwal.daftar_mata_kuliah[x].ruangan)
+            ruangan_selected = -1
+            for idxruangan in range(len(Jadwal.daftar_ruangan)):
+                if(Jadwal.daftar_ruangan[idxruangan].nama == Jadwal.daftar_mata_kuliah[x].ruangan):
+                    ruangan_selected = idxruangan
             for z in urut_waktu:
-                hari_selected = Jadwal.daftar_mata_kuliah[x].hari[z / COMB_PER_HARI]
-                jam_selected = Jadwal.daftar_mata_kuliah[x].awal + (z % COMB_PER_HARI) - 1
+                hari_selected = Jadwal.daftar_mata_kuliah[x].hari[int(z / COMB_PER_HARI)]
+                jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI) - 1
                 temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
-                if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.akhir):
+                if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.jam_awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.jam_akhir):
                     MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
                     break
         return MBaru
 
+    @classmethod
     def mutate(self, chromosome):
         panjang = len(chromosome)
-        bnyk = math.ceil(panjang / 20)
+        bnyk = ceil(panjang / 20)
         for i in range(bnyk):
             x = randint(0, panjang - 1)
             chromosome[x] = self.random_assign(x)
         # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
+    @classmethod
     def selectidx(self, n, fitness_total, r_num):
         now = 0
         idx = 0
@@ -78,7 +97,7 @@ class Genetic:
             idx += 1
         return idx
 
-    @staticmethod
+    @classmethod
     def run(self, loops):
 
         for xxx in range(loops):
@@ -91,7 +110,7 @@ class Genetic:
 
             # sort based on fitness_total
             for i in range(n):
-                for j in range(n-i):
+                for j in range(n-i-1):
                     if (fitness_total[j] > fitness_total[j+1]):
                         fitness_total[j], fitness_total[j+1] = fitness_total[j+1], fitness_total[j]
                         self.inputs[j], self.inputs[j+1] = self.inputs[j+1], self.inputs[j]
@@ -103,22 +122,21 @@ class Genetic:
             for i in range(n):
                 total_chance += fitness_total[i]
 
-            result = []
+            self.result = []
             for i in range(n):
-                x = self.inputs[selectidx(n, fitness_total, randint(0, total_chance-1))][:pivot]
-                y = self.inputs[selectidx(n, fitness_total, randint(0, total_chance-1))][pivot:]
+                x = self.inputs[self.selectidx(n, fitness_total, randint(0, total_chance-1))][:pivot]
+                y = self.inputs[self.selectidx(n, fitness_total, randint(0, total_chance-1))][pivot:]
                 child = x
-                child.append(y)
-
+                child.extend(y)
                 if(n > randint(1, n*n)):
                     self.mutate(child)
 
-                result.append(child)
+                self.result.append(child)
+            self.inputs = self.result
 
-            inputs = result
-
-    @staticmethod
+    @classmethod
     def init(self):
+        seed()
         self.inputs = []
         self.result = []
         banyak = 10
@@ -132,11 +150,11 @@ class Genetic:
     def add(self, jadwal):
         self.inputs.append(jadwal)
 
-    @staticmethod
+    @classmethod
     def best(self):
         return self.result[-1]
 
-    @staticmethod
+    @classmethod
     def sort(self):
         fitness_total = []
         n = len(self.inputs)
@@ -145,7 +163,7 @@ class Genetic:
             fitness_total.append(self.fitness(chromosome))
 
         for i in range(n):
-            for j in range(n-i):
+            for j in range(n-i-1):
                 if (fitness_total[j] > fitness_total[j+1]):
                     fitness_total[j], fitness_total[j+1] = fitness_total[j+1], fitness_total[j]
                     self.result[j], self.result[j+1] = self.result[j+1], self.result[j]

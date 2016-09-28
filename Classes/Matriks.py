@@ -7,6 +7,7 @@ class Matriks:
             self.row = r
         if c is not None:
             self.col = c
+
         self.matriks = []
         for i in range(self.row):
             self.matriks.append([])

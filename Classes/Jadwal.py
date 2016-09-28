@@ -7,6 +7,7 @@ class Jadwal:
     daftar_ruangan = []
     daftar_mata_kuliah = []
     total_pasangan = 0
+
     def process_ruangan_dan_mata_kuliah(self, ruangan_raw, mata_kuliah_raw):
 
         for ruangan in ruangan_raw:
@@ -24,7 +25,6 @@ class Jadwal:
 
         n = len(self.daftar_mata_kuliah)
         temp_total = 0
-        self.total_pasangan = 0
         for i in range(0,n):
             self.total_pasangan += temp_total * self.daftar_mata_kuliah[i].sks
             temp_total += self.daftar_mata_kuliah[i].sks
