@@ -6,7 +6,7 @@ class MatKulOnlyTime:
         self.sks = -1
 
     def setTime(self, r, j, h, s):
-        self.r_selected = r
-        self.j_selected = j
-        self.h_selected = h
-        self.sks = s
+        self.r_selected = int(r)
+        self.j_selected = int(j)
+        self.h_selected = int(h)
+        self.sks = int(s)
