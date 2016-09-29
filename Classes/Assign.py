@@ -3,17 +3,14 @@ from .Jadwal import Jadwal
 class Assign:
 	daftar_matkul_time = []
 	
-	def __init__(self, tc):
-		self.jadwal = Jadwal(tc)
-	
 	def nama_to_ruang(nama):
-		for ruang in self.jadwal.daftar_ruangan:
+		for ruang in Jadwal.daftar_ruangan:
 			if ruang.nama == nama:
 				return ruang
 				break
 		
 	def cariruang(matkul):
-		temp_matkul_time = MatKulOnlyTime
+		temp_matkul_time = MatKulOnlyTime()
 		bol = False
 		if matkul.ruangan != '-':
 			ruang = nama_to_ruang(matkul.ruangan)
@@ -29,7 +26,7 @@ class Assign:
 								bol = True
 								break	
 		else:
-			for ruang in self.jadwal.daftar_ruangan:
+			for ruang in Jadwal.daftar_ruangan:
 				if bol:
 					break				
 				for hari in matkul.hari:
@@ -45,6 +42,5 @@ class Assign:
 									break
 				
 	def masukkan():
-		for matkul in self.jadwal.daftar_mata_kuliah:			
+		for matkul in Jadwal.daftar_mata_kuliah:			
 			cariruang(matkul)
-	
