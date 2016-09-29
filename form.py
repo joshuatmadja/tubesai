@@ -2,6 +2,7 @@ import tkinter
 from tkinter import *
 from tkinter import ttk 
 from tkinter import messagebox
+from tkinter import filedialog
 
 Days = ('Senin','Selasa','Rabu','Kamis','Jumat')
 class form(Frame):
@@ -153,11 +154,26 @@ class form(Frame):
 		printRes = tkinter.Button(self.parent, text=u"Simulated Annealing", command=self.onClickShow).grid(column=0, row=3, pady=(5,10), columnspan=2)
 		labelFrame = tkinter.Label(self.parent, text=u"==========================================================").grid(row=4, columnspan=2)
 
-		
+		self.entryFileVar = tkinter.StringVar()
+		self.entryFile = tkinter.Entry(self.parent, textvariable=self.entryFileVar, width=100).grid(column=0, row=5, columnspan=2, pady=(30,0))
+		self.entryFileVar.set('')
+		buttonBrowse = tkinter.Button (self.parent, text=u"Telusuri", command=self.loadBerkas).grid(column=0, row=6, columnspan=2)
+		buttonRead = tkinter.Button(self.parent, text=u"Baca").grid(column=0,row=7, columnspan=2)
+
 		printR = tkinter.Button(self.parent, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
 		printR.grid(column=0, row=1,pady=(10,20))
 		printJ = tkinter.Button(self.parent, text=u"Cetak Jadwal", command=self.onClickPrintSchedule)
 		printJ.grid(column=1, row=1, pady=(10,20))
+
+	def loadBerkas(self):
+		self.fname = filedialog.askopenfilename(title="Pilih Berkas")
+
+		if self.fname:
+			try:
+				self.entryFileVar.set(self.fname)
+			except:
+				messagebox.showerror("Kesalahan", "Terdapat kesalahan dalam membaca berkas")
+			return
 
 	def selectingRuang(self):
 		if(self.roomFree.get() == 0):
@@ -316,29 +332,42 @@ class result(Frame):
 
 		tabel = ttk.Treeview(self.parent)
 		tabel.grid(column=0, row=0,columnspan=2)
-		Time = ('07:00', '08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00')
+		Time1=('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00')
+		Time2= ('12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00')
 
 		tabel.column("#0",width=100)
 		tabel.heading("#0", text="Ruangan")
-		tabel["columns"]=Time
-		for d in Time:
+		tabel["columns"]=Time1
+		for d in Time1:
 			tabel.column(d,width=70)
 			tabel.heading(d, text=d)
+		
+		tabel1=ttk.Treeview(self.parent)
+		tabel1.grid(column=0,row=1,columnspan=2)
+
+		tabel1.column("#0",width=100)
+		tabel1.heading("#0",text="Ruangan")
+		tabel1["columns"]=Time2
+		for d in Time2:
+			tabel1.column(d,width=70)
+			tabel1.heading(d,text=d)
 
 		print(self.nRoom)
 		for j in range(self.nRoom):
 			namaRuang = self.rooms[j][0]
 			idRuang = "r"+str(j)
 			print(idRuang)
-			tabel.insert("",j, idRuang, text=namaRuang)
+			tabel.insert("", j, idRuang, text=namaRuang)
+			tabel1.insert("", j, idRuang, text=namaRuang)
 			i=0
 			for d in Days:
-				tabel.insert(idRuang,i,text=d,values=Time)
+				tabel.insert(idRuang,i,text=d,values=Time1)
+				tabel1.insert(idRuang,i,text=d,values=Time2)
 				i+=1
 
 		self.numberofConflicts=IntVar()
-		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=1, sticky="e")
-		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=1, sticky="w")
+		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=2, sticky="e")
+		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=2, sticky="w")
 		self.numberofConflicts.set(0)
 
 	def setRuang(self,value):
