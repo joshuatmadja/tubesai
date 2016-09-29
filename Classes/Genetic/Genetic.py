@@ -2,7 +2,7 @@ from ..MatKulOnlyTime import MatKulOnlyTime
 from ..Matriks import Matriks
 from ..Jadwal import Jadwal
 from random import randint, shuffle, seed
-from math import ceil
+from math import ceil, floor
 
 class Genetic:
     inputs = []
@@ -12,7 +12,7 @@ class Genetic:
         if(Jadwal.total_pasangan == 0):
             n = len(Jadwal.daftar_mata_kuliah)
             temp_total = 0
-            for i in range(0,n):
+            for i in range(n):
                 Jadwal.total_pasangan += temp_total * Jadwal.daftar_mata_kuliah[i].sks
                 temp_total += Jadwal.daftar_mata_kuliah[i].sks
             Jadwal.total_pasangan += 1
@@ -57,8 +57,8 @@ class Genetic:
                 if bisa:
                     break
                 for z in urut_waktu:
-                    hari_selected = Jadwal.daftar_mata_kuliah[x].hari[int(z / COMB_PER_HARI)]
-                    jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI) - 1
+                    hari_selected = Jadwal.daftar_mata_kuliah[x].hari[floor(z / COMB_PER_HARI)]
+                    jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI)
                     temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
                     if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.jam_awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.jam_akhir):
                         MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
@@ -69,8 +69,9 @@ class Genetic:
                 if(Jadwal.daftar_ruangan[idxruangan].nama == Jadwal.daftar_mata_kuliah[x].ruangan):
                     ruangan_selected = idxruangan
             for z in urut_waktu:
-                hari_selected = Jadwal.daftar_mata_kuliah[x].hari[int(z / COMB_PER_HARI)]
-                jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI) - 1
+                hari_selected = Jadwal.daftar_mata_kuliah[x].hari[floor(z / COMB_PER_HARI)]
+                jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI)
+
                 temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
                 if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.jam_awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.jam_akhir):
                     MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
@@ -80,10 +81,10 @@ class Genetic:
     @classmethod
     def mutate(self, chromosome):
         panjang = len(chromosome)
-        bnyk = ceil(panjang / 20)
+        bnyk = int(ceil(panjang / 20))
         for i in range(bnyk):
             x = randint(0, panjang - 1)
-            chromosome[x] = self.random_assign(x)
+            #chromosome[x] = self.random_assign(x)
         # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
 
     @classmethod
@@ -145,7 +146,6 @@ class Genetic:
             self.inputs.append([])
             for x in range(n):
                 self.inputs[i].append(self.random_assign(x))
-
     @staticmethod
     def add(self, jadwal):
         self.inputs.append(jadwal)
