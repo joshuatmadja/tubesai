@@ -438,8 +438,8 @@ class result(Frame):
 			tabel1.insert("", j, idRuang, text=namaRuang)
 			i=0
 			for d in Days:
-				tabel.insert(idRuang,i,text=d,values=Time1) # hasil pagi
-				tabel1.insert(idRuang,i,text=d,values=Time2) # hasil malam
+				tabel.insert(idRuang,i,text=d,values=self.hasilPagi[j][i]) # hasil pagi
+				tabel1.insert(idRuang,i,text=d,values=self.hasilMalam[j][i]) # hasil malam
 				i+=1
 
 		self.numberofConflicts=IntVar()
