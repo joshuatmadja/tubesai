@@ -16,26 +16,22 @@ class Genetic:
                 Jadwal.total_pasangan += temp_total * Jadwal.daftar_mata_kuliah[i].sks
                 temp_total += Jadwal.daftar_mata_kuliah[i].sks
             Jadwal.total_pasangan += 1
-        pass
 
     @classmethod
     def convertToMatriks(self, chromosome):
         M = Matriks(len(Jadwal.daftar_ruangan), 120)
         #print ("CHROMOSOME : " + str(chromosome))
-        idx = 0
         for mkot in chromosome:
             #print ("MKOT " + str(mkot))
             awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
             for i in range(awal, awal + mkot.sks):
-                M.matriks[mkot.r_selected][i].append(Jadwal.daftar_mata_kuliah[idx].nama)
-            idx += 1
+                M.matriks[mkot.r_selected][i].append(mkot)
         return M
 
     @classmethod
     def fitness(self, chromosome):
         M = self.convertToMatriks(chromosome)
         con = int(M.conflict_count())
-
         return Jadwal.total_pasangan - int(M.conflict_count())
 
     # mutate ini dilakukan abis chromosomenya digabungin

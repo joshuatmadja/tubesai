@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 from Classes.Jadwal import Jadwal
+from Classes.Genetic.Genetic import Genetic
 from math import floor
 
 Days = ('Senin','Selasa','Rabu','Kamis','Jumat')
@@ -115,12 +116,12 @@ class form(Frame):
 
 		self.checkS = []
 		self.SDay = []
-		i=0
+		i = 0
 		for d in Days:
 			self.checkS.append(tkinter.IntVar())
 			self.SDay.append(tkinter.Checkbutton(frJadwal,text=d,variable=self.checkS[i],onvalue=1, offvalue=0))
 			self.SDay[i].grid(column=1, row=i+3,sticky="w")
-			i+=1
+			i += 1
 
 		labelJamJ = tkinter.Label(frJadwal, text=u"Jam", anchor="w")
 		labelJamJ.grid(column=2, row = 3, sticky ="w", padx=(30,0))
@@ -153,7 +154,7 @@ class form(Frame):
 		labelPilihSolusi = tkinter.Label(self.parent,text=u"=======================PILIH SOLUSINYA=======================")
 		labelPilihSolusi.grid(row=2,pady=(5,0), sticky=N+E+S+W, columnspan=3)
 		printHC = tkinter.Button(self.parent, text=u"Hill Climbing").grid(column=0, row=3, pady=(5,10))
-		printGA = tkinter.Button(self.parent, text=u"Genetic Algorithm").grid(column=1, row=3,pady=(5,10))
+		printGA = tkinter.Button(self.parent, text=u"Genetic Algorithm", command = self.runGenetic).grid(column=1, row=3,pady=(5,10))
 		printRes = tkinter.Button(self.parent, text=u"Simulated Annealing", command=self.onClickShow).grid(column=0, row=3, pady=(5,10), columnspan=2)
 		labelFrame = tkinter.Label(self.parent, text=u"==========================================================").grid(row=4, columnspan=2)
 
@@ -249,7 +250,7 @@ class form(Frame):
 		print(self.rooms)
 
 	def onClickShow(self):
-		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules]
+		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam]
 		app = Toplevel(self.parent)
 		childWindow = result(app, dataPass, self)
 		#app.title('Result')
@@ -324,7 +325,6 @@ class form(Frame):
 	def convertJadwalToRoomsAndSchedules(self, J):
 		self.setRuang(len(J.daftar_ruangan))
 		self.setJadwal(len(J.daftar_mata_kuliah))
-
 		self.rooms = []
 		self.schedules = []
 		for i in range(self.nRoom):
@@ -337,6 +337,53 @@ class form(Frame):
 	def bacaRuang(self, nama_file):
 		J = Jadwal(nama_file)
 		self.convertJadwalToRoomsAndSchedules(J)
+
+	# interface
+
+	def interfaceMatriks(self, M): #M merupakan Matriks
+		self.hasilPagi = []
+		self.hasilMalam = []
+		for i in range(self.nRoom):
+			self.hasilPagi.append([])
+			self.hasilMalam.append([])
+			for j in range(5):
+				self.hasilPagi[i].append([])
+				self.hasilMalam[i].append([])
+				for k in range(12):
+					self.hasilPagi[i][j].append([])
+					self.hasilMalam[i][j].append([])
+
+		for i in range(self.nRoom):
+			for j in range(120):
+				hari = floor(j / 24)
+				jam = j % 24
+				if(jam < 12):
+					self.hasilPagi[i][hari][jam] = M.matriks[i][j]
+				else:
+					self.hasilMalam[i][hari][jam-12] = M.matriks[i][j]
+
+		for i in range(self.nRoom):
+			for j in range(5):
+				for k in range(12):
+					if(self.hasilPagi[i][j][k] == []):
+						self.hasilPagi[i][j][k] = '-'
+					if(self.hasilMalam[i][j][k] == []):
+						self.hasilMalam[i][j][k] = '-'
+
+		for i in range(self.nRoom):
+			for j in range(5):
+				self.hasilPagi[i][j] = tuple(self.hasilPagi[i][j])
+				self.hasilMalam[i][j] = tuple(self.hasilMalam[i][j])
+
+	# Algorithm
+	def runGenetic(self):
+		Genetic()
+		Genetic.init()
+		Genetic.run(100)
+		Genetic.sort()
+		M = Genetic.convertToMatriks(Genetic.best())
+		self.interfaceMatriks(M)
+		self.onClickShow()
 
 class result(Frame):
 
@@ -357,6 +404,8 @@ class result(Frame):
 		self.nSchedule = self.lists[1]
 		self.rooms = self.lists[2]
 		self.schedules = self.lists[3]
+		self.hasilPagi = self.lists[4]
+		self.hasilMalam = self.lists[5]
 
 		tabel = ttk.Treeview(self.parent)
 		tabel.grid(column=0, row=0,columnspan=2)
@@ -398,40 +447,6 @@ class result(Frame):
 		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=2, sticky="w")
 		self.numberofConflicts.set(0)
 
-	def interfaceMatriks(self, M): #M merupakan Matriks
-		self.hasilPagi = []
-		self.hasilMalam = []
-		for i in range(self.nRoom):
-			self.hasilPagi.append([])
-			self.hasilMalam.append([])
-			for j in range(5):
-				self.hasilPagi[i].append([])
-				self.hasilMalam[i].append([])
-				for k in range(12):
-					self.hasilPagi[i][j].append([])
-					self.hasilMalam[i][j].append([])
-
-		for i in range(self.nRoom):
-			for j in range(120):
-				hari = floor(j / 24)
-				jam = j % 24
-				if(jam < 12):
-					self.hasilPagi[i][hari][jam] = M[i][j]
-				else:
-					self.hasilMalam[i][hari][jam-12] = M[i][j]
-
-		for i in range(self.nRoom):
-			for j in range(5):
-				for k in range(12):
-					if(self.hasilPagi[i][j][k] == []):
-						self.hasilPagi[i][j][k] = '-'
-					if(self.hasilMalam[i][j][k] == []):
-						self.hasilMalam[i][j][k] = '-'
-
-		for i in range(self.nRoom):
-			for j in range(5):
-				self.hasilPagi[i][j] = tuple(self.hasilPagi[i][j])
-				self.hasilMalam[i][j] = tuple(self.hasilMalam[i][j])
 
 if __name__ == "__main__":
 	root = Tk()
