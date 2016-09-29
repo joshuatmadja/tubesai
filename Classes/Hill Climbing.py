@@ -8,24 +8,33 @@ from .Assign import Assign
 # kalo liat list, rooms[idx][3] itu list harinya
 
 class HillClimbing:
-
-	def search_ruang_constraint(self, code,idx,day):
+	
+	# Calculate index x and y value from selected slot
+	# code = 0 means beginning idx x
+	# code = 1 means end idx x
+	def search_ruang_constraint(self, code, idx, day):
 		ans = (rooms[idx][3][day] - 1) * 24 + rooms[idx][code+1]
 		return ans
 
-	# dia cuma balikin bisa atau nggak
+	# Return boolean value
 	def check_matkul_constraint(self, matkull, x, y):
-
+		
 		banyak_hari = len(matkull[5])
 		for idx_hari in range(banyak_hari):
+			ans = 0
+			
+			# Check idx x (start and end), fulfill the constraint or not
+			# If selected slot x fulfill the constraint, continue the check.
+			# If not, end the looping, move check next matkul (conflicted or not)
 			x1 = (matkull[5][idx_hari] - 1) * 24 + matkull[2]
 			x2 = x1 + matkull[4] #tambah sks
 			if (x < x1 or x > x2):
 				break
 
 			found = 0
-			ans = 0
-
+			
+			# If idx x fulfill the constraint, check room constraint
+			# Check if slot idx y fulfill the constraint
 			for idx_hari in range(len(matkull[1])):
 				if (y == matkull[1][idx_hari]):
 					found = 1
@@ -33,7 +42,8 @@ class HillClimbing:
 					break
 			if (found == 1):
 				break
-		return ans # 0 means false, 1 means true
+		return ans 
+		# 0 means false, 1 means true
 
 	def first_initiate(self):
 		# STEP 1 - Take MatkulOnlyTime data (list) of Course
@@ -78,6 +88,7 @@ class HillClimbing:
 								for (idx_x) in range(x_start,x_end):
 									if (len(self.matrix[idx_x][idx_y]) > 0):
 										# Search to next slot time
+										pass
 									else
 										# Check if the slot time match with matkul constraint
 										cek = self.check_matkul_constraint(self.matrix[idx_x][idx_y][0], idx_x, idx_y):
@@ -112,4 +123,4 @@ class HillClimbing:
 		self.curr_conflict = curr_matriks.conflict_count()
 		self.next_conflict = 0
 		self.list_idx = []
-		self.tupel = (0,0,0)
+		self.tupel = (0,0,0) # For updating list MatkulOnlyTime and list_idx
