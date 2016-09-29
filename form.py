@@ -381,7 +381,7 @@ class result(Frame):
 	def bacaRuang(self, nama_file):
 		self.jadwal = Jadwal(nama_file)
 
-	
+
 
 if __name__ == "__main__":
 	root = Tk()
