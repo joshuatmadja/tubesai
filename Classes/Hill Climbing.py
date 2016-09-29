@@ -77,18 +77,18 @@ class HillClimbing:
 			# cek muter
 			while (roundtrip != 2):
 
-				for idx in range(len(self.list_idx)):
+				for idx_matkul in range(len(self.list_idx)):
 					i = self.list_idx[idx].x
 					j = self.list_idx[idx].y
 					if (len(self.matrix[i][j]) > 1):
 						list_temp = self.matrix[i][j]
 						conflicted_matkul = copy.deepcopy(list_temp[0])
-						for (idx_y) in range j:
-							# Constraint slot waktu di matrixx sesuai constraint ruangan
-							for day in range(len(rooms[idx][3])):
-								x_start =  self.search_ruang_constraint(0,idx,rooms[idx][3][day])
-								x_end = self.search_ruang_constraint(1,idx,rooms[idx][3][day])
-								for (idx_x) in range(x_start,x_end):
+						for idx_y in range nRoom:
+							# Constraint slot waktu di matrix sesuai constraint ruangan
+							for day in range(len(rooms[idx_matkul][3])):
+								x_start =  self.search_ruang_constraint(0, idx, rooms[idx_matkul][3][day])
+								x_end = self.search_ruang_constraint(1, idx, rooms[idx_matkul][3][day])
+								for (idx_x) in range(x_start , x_end):
 									if (len(self.matrix[idx_x][idx_y]) > 0):
 										# Search to next slot time
 										pass
@@ -96,13 +96,15 @@ class HillClimbing:
 										# Check if the slot time match with matkul constraint
 										cek = self.check_matkul_constraint(self.matrix[idx_x][idx_y][0], idx_x, idx_y):
 										if (cek == 1):
-										# Found the slot
+											# Found the slot
 											found = 1
 											(self.matrix[idx_x][idx_y]).append(conflicted_matkul)
 											del (self.matrix[i][j])[0]
-											self.tupel = (idx , idx_x, idx_y)
+											self.tupel = (idx_matkul , idx_x, idx_y)
 											roundtrip = 0
-										# If not found the slot, check next slot
+										else
+											# If not found the slot, check next slot
+											pass
 									if (found == 1):
 										break
 								if (found == 1):
@@ -111,7 +113,7 @@ class HillClimbing:
 								break
 					if (found == 1):
 						break
-					else if (found == 0 and idx == len(self.list_idx)):
+					else if (found == 0 and idx_matkul == len(self.list_idx)):
 						roundtrip+=1
 
 			# Count conflict of new solution
