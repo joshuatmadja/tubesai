@@ -1,12 +1,13 @@
 import tkinter
 from tkinter import *
-from tkinter import ttk 
+from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
+from Classes.Jadwal import Jadwal
 
 Days = ('Senin','Selasa','Rabu','Kamis','Jumat')
 class form(Frame):
-	
+
 	def __init__(self, parent):
 		Frame.__init__(self,parent)
 		self.parent = parent
@@ -16,6 +17,7 @@ class form(Frame):
 		self.rooms = []
 		self.schedules = []
 		self.mulai()
+		self.jadwal = []
 
 	def mulai(self):
 		self.grid()
@@ -86,7 +88,7 @@ class form(Frame):
 		self.entryScheduleVar = tkinter.StringVar()
 		self.entrySchedule = tkinter.Entry(frJadwal, textvariable=self.entryScheduleVar, width = 20)
 		self.entrySchedule.grid(column=1, row=0, sticky="nw", columnspan=3)
-		
+
 		labelJadwal = tkinter.Label(frJadwal, text=u"       SKS", anchor="w")
 		labelJadwal.grid(column=3,row=0, sticky="ne",columnspan=2)
 		self.sks = tkinter.IntVar()
@@ -106,7 +108,7 @@ class form(Frame):
 		self.entryRoomVar = tkinter.StringVar()
 		self.entryRoom = tkinter.Entry(frJadwal, textvariable=self.entryRoomVar, width = 20, state="disabled")
 		self.entryRoom.grid(column=2, row=2, sticky="nw",columnspan=3)
-		
+
 		labelHariJ = tkinter.Label(frJadwal, text=u"Hari", anchor="w")
 		labelHariJ.grid(column=0, row=3, sticky="W")
 
@@ -136,7 +138,7 @@ class form(Frame):
 
 		self.entryJamMulaiJVar.set(7)
 		self.entryJamSelesaiJVar.set(8)
-		
+
 		buttonJadwal = tkinter.Button(frJadwal,text=u"Submit Jadwal", command=self.validateJadwal)
 		buttonJadwal.grid(column=0, row=9, columnspan=9, padx=(10,10), pady=(10,0), sticky="s")
 
@@ -275,7 +277,7 @@ class form(Frame):
 		tup = tuple(hasil)
 		self.schedules.append(tup)
 		self.nSchedule+=1
-		print(tup)		
+		print(tup)
 
 		self.entryScheduleVar.set('')
 		self.sks.set(2)
@@ -286,7 +288,7 @@ class form(Frame):
 		self.entrySchedule.focus_set()
 		for j in range(5):
 			self.SDay[j].deselect()
-	
+
 	def onClickPrintSchedule(self):
 		print('Jadwal terkumpul:')
 		print(self.schedules)
@@ -341,7 +343,7 @@ class result(Frame):
 		for d in Time1:
 			tabel.column(d,width=70)
 			tabel.heading(d, text=d)
-		
+
 		tabel1=ttk.Treeview(self.parent)
 		tabel1.grid(column=0,row=1,columnspan=2)
 
@@ -376,6 +378,10 @@ class result(Frame):
 	def setJadwal(self,value):
 		self.jumlahJadwal=value
 
+	def bacaRuang(self, nama_file):
+		self.jadwal = Jadwal(nama_file)
+
+	
 
 if __name__ == "__main__":
 	root = Tk()
