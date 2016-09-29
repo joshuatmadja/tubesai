@@ -86,7 +86,7 @@ class HillClimbing:
 					if (found == 1):
 						break
 					else if (found == 0 and idx == len(self.list_idx)):
-						roundtrip++
+						roundtrip+=1
 
 			# Count conflict of new solution
 			self.next_conflict = self.matrix.conflict_count()
