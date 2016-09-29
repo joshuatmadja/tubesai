@@ -5,42 +5,52 @@ from .Jadwal import Jadwal
 from .form import Form
 from .Assign import Assign
 
+# kalo liat list, rooms[idx][3] itu list harinya
+
 class HillClimbing:
-	
-	def search_ruang_constraint(code,idx,day):
-		ans = ( rooms[idx][3][day] - 1 ) * 24 + rooms[idx][code+1]
+
+	def search_ruang_constraint(self, code,idx,day):
+		ans = (rooms[idx][3][day] - 1) * 24 + rooms[idx][code+1]
 		return ans
 
-	def check_matkul_constraint(matkull, x, y): 
-		for idx_hari in range(len(matkull[6])):
-			x1 = (matkull[6][idx_hari] - 1) * 24 + matkull[3]
-			x2 = x1 + matkull[5]
-			if (x <= x1 and x >= x2)
+	# dia cuma balikin bisa atau nggak
+	def check_matkul_constraint(self, matkull, x, y):
+
+		banyak_hari = len(matkull[5])
+		for idx_hari in range(banyak_hari):
+			x1 = (matkull[5][idx_hari] - 1) * 24 + matkull[2]
+			x2 = x1 + matkull[4] #tambah sks
+			if (x < x1 or x > x2):
 				break
+
 			found = 0
 			ans = 0
-			for idx_hari in range(len(matkull[2])):
-				if (y == matkull[2][idx_hari] ):
+
+			for idx_hari in range(len(matkull[1])):
+				if (y == matkull[1][idx_hari]):
 					found = 1
 					ans = 1
 					break
-			if (found == 1)
+			if (found == 1):
 				break
 		return ans # 0 means false, 1 means true
 
-	def first_initiate():
+	def first_initiate(self):
 		# STEP 1 - Take MatkulOnlyTime data (list) of Course
 		# convert to index by formula
-		for i in range(len(Jadwal.daftar_mata_kuliah)):
+		nSchedule = len(Jadwal.daftar_mata_kuliah)
+		for i in range(nSchedule):
 			x = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected
 			y = Assign[i].daftar_matkul_time.r_selected
 			temp = (x , y)
 			self.list_idx.append(temp)
-			self.tupel = (0 , self.list_idx[0].x , self.list_idx[0].y)
+			self.tupel = (0, self.list_idx[0].x, self.list_idx[0].y)
 
-	def calculate():
-		while self.next_conflict < self.curr_conflict:
-			self.curr_conflict = self.next_conflict
+	def calculate(self):
+		cnt = 0
+		while self.next_conflict < self.curr_conflict or cnt < 10:
+			if (self.next_conflict < self.curr_conflict):
+				self.curr_conflict = self.next_conflict
 			self.list_temp = []
 			found = 0
 
@@ -51,11 +61,13 @@ class HillClimbing:
 			# MAIN ALGORITHM
 			# STEP 2 - Conflict checking & solving
 			roundtrip = 0
+			# cek muter
 			while (roundtrip != 2):
+
 				for idx in range(len(self.list_idx)):
 					i = self.list_idx[idx].x
 					j = self.list_idx[idx].y
-					if ( len(self.matrix[i][j]) > 1 ):
+					if (len(self.matrix[i][j]) > 1):
 						list_temp = self.matrix[i][j]
 						conflicted_matkul = copy.deepcopy(list_temp[0])
 						for (idx_y) in range j:
@@ -75,7 +87,7 @@ class HillClimbing:
 											(self.matrix[idx_x][idx_y]).append(conflicted_matkul)
 											del (self.matrix[i][j])[0]
 											self.tupel = (idx , idx_x, idx_y)
-											roundtrip = 0	
+											roundtrip = 0
 										# If not found the slot, check next slot
 									if (found == 1):
 										break
@@ -90,6 +102,10 @@ class HillClimbing:
 
 			# Count conflict of new solution
 			self.next_conflict = self.matrix.conflict_count()
+			if (self.next_conflict >= self.curr_conflict):
+				cnt += 1
+			else
+				cnt = 0
 
 	def __init__(self):
 		self.matrix = Matriks()
@@ -97,7 +113,3 @@ class HillClimbing:
 		self.next_conflict = 0
 		self.list_idx = []
 		self.tupel = (0,0,0)
-		pass
-		
-#self.tupel namanya mencurigakan, mungkin bisa diganti?
-#pake self. kalo dia atribut si kelasnya
