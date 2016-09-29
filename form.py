@@ -20,6 +20,7 @@ class form(Frame):
 		self.schedules = []
 		self.mulai()
 		self.jadwal = []
+		self.numberofConflicts = IntVar()
 
 	def mulai(self):
 		self.grid()
@@ -250,7 +251,7 @@ class form(Frame):
 		print(self.rooms)
 
 	def onClickShow(self):
-		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam]
+		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam, self.numberofConflicts]
 		app = Toplevel(self.parent)
 		childWindow = result(app, dataPass, self)
 		#app.title('Result')
@@ -343,6 +344,7 @@ class form(Frame):
 	def interfaceMatriks(self, M): #M merupakan Matriks
 		self.hasilPagi = []
 		self.hasilMalam = []
+		self.numberofConflicts.set(M.conflict_count())
 		for i in range(self.nRoom):
 			self.hasilPagi.append([])
 			self.hasilMalam.append([])
@@ -406,6 +408,8 @@ class result(Frame):
 		self.schedules = self.lists[3]
 		self.hasilPagi = self.lists[4]
 		self.hasilMalam = self.lists[5]
+		self.numberofConflicts=IntVar()
+		self.numberofConflicts.set(self.lists[6])
 
 		tabel = ttk.Treeview(self.parent)
 		tabel.grid(column=0, row=0,columnspan=2)
@@ -442,7 +446,7 @@ class result(Frame):
 				tabel1.insert(idRuang,i,text=d,values=self.hasilMalam[j][i]) # hasil malam
 				i+=1
 
-		self.numberofConflicts=IntVar()
+
 		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=2, sticky="e")
 		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=2, sticky="w")
 		self.numberofConflicts.set(0)
