@@ -160,7 +160,7 @@ class form(Frame):
 		self.entryFile = tkinter.Entry(self.parent, textvariable=self.entryFileVar, width=100).grid(column=0, row=5, columnspan=2, pady=(30,0))
 		self.entryFileVar.set('')
 		buttonBrowse = tkinter.Button (self.parent, text=u"Telusuri", command=self.loadBerkas).grid(column=0, row=6, columnspan=2)
-		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang(self.entryFileVar.get())).grid(column=0,row=7, columnspan=2)
+		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang("Testcase.txt")).grid(column=0,row=7, columnspan=2)
 
 		printR = tkinter.Button(self.parent, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
 		printR.grid(column=0, row=1,pady=(10,20))
@@ -319,8 +319,22 @@ class form(Frame):
 	def setJadwal(self,value):
 		self.nSchedule=value
 
+	def convertJadwalToRoomsAndSchedules(self, J):
+		self.nRoom = len(J.daftar_ruangan)
+		self.nSchedule = len(J.daftar_mata_kuliah)
+
+		self.rooms = []
+		self.schedules = []
+		for i in range(self.nRoom):
+			tempJ = J.daftar_ruangan[i]
+			self.rooms.append((tempJ.nama, tempJ.jam_awal, tempJ.jam_akhir, tempJ.hari))
+		for i in range(self.nSchedule):
+			tempS = J.daftar_mata_kuliah[i]
+			self.schedules.append((tempS.nama, tempS.ruangan, tempS.jam_awal, tempS.jam_akhir, tempS.sks, tempS.hari))
+
 	def bacaRuang(self, nama_file):
-		self.schedules = Jadwal(nama_file)
+		J = Jadwal(nama_file)
+		self.convertJadwalToRoomsAndSchedules(J)
 
 class result(Frame):
 
@@ -380,10 +394,6 @@ class result(Frame):
 		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=2, sticky="e")
 		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=2, sticky="w")
 		self.numberofConflicts.set(0)
-
-
-
-	
 
 if __name__ == "__main__":
 	root = Tk()
