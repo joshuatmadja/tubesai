@@ -10,3 +10,6 @@ class MatKulOnlyTime:
         self.j_selected = int(j)
         self.h_selected = int(h)
         self.sks = int(s)
+
+    def __str__(self):
+        return "Ruang : " + str(self.r_selected) + '\nHari : ' + str(self.h_selected) + '\nJam Mulai : ' + str(self.j_selected) + '\nSKS : ' + str(self.sks)
