@@ -160,7 +160,7 @@ class form(Frame):
 		self.entryFile = tkinter.Entry(self.parent, textvariable=self.entryFileVar, width=100).grid(column=0, row=5, columnspan=2, pady=(30,0))
 		self.entryFileVar.set('')
 		buttonBrowse = tkinter.Button (self.parent, text=u"Telusuri", command=self.loadBerkas).grid(column=0, row=6, columnspan=2)
-		buttonRead = tkinter.Button(self.parent, text=u"Baca").grid(column=0,row=7, columnspan=2)
+		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang(self.entryFileVar.get())).grid(column=0,row=7, columnspan=2)
 
 		printR = tkinter.Button(self.parent, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
 		printR.grid(column=0, row=1,pady=(10,20))
@@ -313,6 +313,15 @@ class form(Frame):
 			self.schedules.pop(self.delJadwal.get())
 			self.nSchedule-=1
 
+	def setRuang(self,value):
+		self.nRoom=value
+
+	def setJadwal(self,value):
+		self.nSchedule=value
+
+	def bacaRuang(self, nama_file):
+		self.schedules = Jadwal(nama_file)
+
 class result(Frame):
 
 	def __init__(self,parent,list,app):
@@ -372,14 +381,7 @@ class result(Frame):
 		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=2, sticky="w")
 		self.numberofConflicts.set(0)
 
-	def setRuang(self,value):
-		self.jumlahRuang=value
 
-	def setJadwal(self,value):
-		self.jumlahJadwal=value
-
-	def bacaRuang(self, nama_file):
-		self.jadwal = Jadwal(nama_file)
 
 	
 
