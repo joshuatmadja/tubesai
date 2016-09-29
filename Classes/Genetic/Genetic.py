@@ -21,11 +21,14 @@ class Genetic:
     def convertToMatriks(self, chromosome):
         M = Matriks(len(Jadwal.daftar_ruangan), 120)
         #print ("CHROMOSOME : " + str(chromosome))
+        idx = 0
         for mkot in chromosome:
             #print ("MKOT " + str(mkot))
+
             awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
             for i in range(awal, awal + mkot.sks):
-                M.matriks[mkot.r_selected][i].append(mkot)
+                M.matriks[mkot.r_selected][i].append(Jadwal.daftar_mata_kuliah[idx].nama)
+            idx += 1
         return M
 
     @classmethod
