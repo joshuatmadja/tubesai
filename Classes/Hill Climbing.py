@@ -83,13 +83,14 @@ class HillClimbing:
 					if (len(self.matrix[i][j]) > 1):
 						list_temp = self.matrix[i][j]
 						conflicted_matkul = copy.deepcopy(list_temp[0])
-						for idx_y in range nRoom:
+						
+						for idx_y in range (nRoom):
 							# Constraint slot waktu di matrix sesuai constraint ruangan
 							for day in range(len(rooms[idx_matkul][3])):
 								x_start =  self.search_ruang_constraint(0, idx, rooms[idx_matkul][3][day])
 								x_end = self.search_ruang_constraint(1, idx, rooms[idx_matkul][3][day])
 								for (idx_x) in range(x_start , x_end):
-									if (len(self.matrix[idx_x][idx_y]) > 0):
+									if (len(self.matrix[idx_x][idx_y]) > 0 or (idx_x == i and idx_y == j)):
 										# Search to next slot time
 										pass
 									else
