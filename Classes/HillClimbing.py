@@ -80,7 +80,7 @@ class HillClimbing:
 			# STEP 2 - Conflict checking & solving
 			roundtrip = 0
 			# cek muter
-			while (roundtrip != 2 and (not Found)):
+			while (roundtrip != 2 and (not found)):
 				for idx_matkul in range(len(self.list_idx)):
 					ruang_awal, waktu_awal = self.list_idx[idx_matkul] # extract the tuple
 
