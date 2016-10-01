@@ -2,39 +2,45 @@ import copy
 import random
 from .Matriks import Matriks
 from .Jadwal import Jadwal
-from ..form import form
 from .Assign import Assign
 
 # kalo liat list, rooms[idx][3] itu list harinya
-
+# rooms itu punya form, ini pake jadwal dulu biar sama. roomsnya diganti Jadwal.daftar_ruangan
 class HillClimbing:
 	# Calculate index x and y value from selected slot
 	# code = 0 means beginning idx x
 	# code = 1 means end idx x
 	def search_ruang_constraint(self, code, idx, day):
-		ans = (rooms[idx][3][day] - 1) * 24 + rooms[idx][code+1]
+		room = Jadwal.daftar_ruangan[idx]
+		ans = (room.hari[day] - 1) * 24
+		if code == 0:
+			ans += room.jam_awal  # constraint jam awal
+		else:
+			ans += room.jam_akhir # constraint jam akhir
 		return ans
-	# Return boolean value
-	def check_matkul_constraint(self, matkull, x, y):
 
-		banyak_hari = len(matkull[5])
+	# Return boolean value
+	def check_matkul_constraint(self, matkul_selected, x, y):
+
+		banyak_hari = len(matkul_selected.hari)
 		for idx_hari in range(banyak_hari):
 			ans = 0
 
 			# Check idx x (start and end), fulfill the constraint or not
 			# If selected slot x fulfill the constraint, continue the check.
 			# If not, end the looping, move check next matkul (conflicted or not)
-			x1 = (matkull[5][idx_hari] - 1) * 24 + matkull[2]
-			x2 = x1 + matkull[4] #tambah sks
-			if (x < x1 or x > x2):
-				break
+			batas_x_awal = (matkul_selected.hari[idx_hari] - 1) * 24 + matkul_selected.jam_awal
+			batas_x_akhir = batas_x_awal + matkul_selected.sks #tambah sks
+			if (x < batas_x_awal or x > batas_x_akhir):
+				continue
+
 
 			found = 0
 
 			# If idx x fulfill the constraint, check room constraint
 			# Check if slot idx y fulfill the constraint
-			for idx_hari in range(len(matkull[1])):
-				if (y == matkull[1][idx_hari]):
+			for idx_hari in range(len(matkul_selected.ruangan)):
+				if (y == matkul_selected.ruangan[idx_hari]):
 					found = 1
 					ans = 1
 					break
@@ -49,14 +55,14 @@ class HillClimbing:
 		nSchedule = len(Jadwal.daftar_mata_kuliah)
 		for i in range(nSchedule):
 			x = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected
-			y = Assign[i].daftar_matkul_time.r_selected
+			y = Assign.daftar_matkul_time[i].r_selected
 			temp = (x , y)
 			self.list_idx.append(temp)
 			self.tupel = (0, self.list_idx[0].x, self.list_idx[0].y)
 
 	def calculate(self):
 		cnt = 0
-		while self.next_conflict < self.curr_conflict or cnt < 10:
+		while cnt < 10:
 			if (self.next_conflict < self.curr_conflict):
 				self.curr_conflict = self.next_conflict
 			self.list_temp = []
@@ -81,28 +87,33 @@ class HillClimbing:
 						list_temp = self.matrix[i][j]
 						conflicted_matkul = copy.deepcopy(list_temp[0])
 
+						nRoom = len(Jadwal.daftar_ruangan)
 						for idx_y in range (nRoom):
+
 							# Constraint slot waktu di matrix sesuai constraint ruangan
-							for day in range(len(rooms[idx_matkul][3])):
-								x_start =  self.search_ruang_constraint(0, idx, rooms[idx_matkul][3][day])
-								x_end = self.search_ruang_constraint(1, idx, rooms[idx_matkul][3][day])
-								for (idx_x) in range(x_start , x_end):
-									if (len(self.matrix[idx_x][idx_y]) > 0 or (idx_x == i and idx_y == j)):
-										# Search to next slot time
-										pass
-									else
-										# Check if the slot time match with matkul constraint
-										cek = self.check_matkul_constraint(self.matrix[idx_x][idx_y][0], idx_x, idx_y):
-										if (cek == 1):
-											# Found the slot
-											found = 1
-											(self.matrix[idx_x][idx_y]).append(conflicted_matkul)
-											del (self.matrix[i][j])[0]
-											self.tupel = (idx_matkul , idx_x, idx_y)
-											roundtrip = 0
-										else
-											# If not found the slot, check next slot
+							for ruang in range(len(rooms)):
+ 								for day in range(len(rooms[ruang][3])):
+ 									x_start =  self.search_ruang_constraint(0, idx, rooms[ruang][3][day])
+ 									x_end = self.search_ruang_constraint(1, idx, rooms[ruang][3][day])
+ 									for (idx_x) in range(x_start , x_end):
+ 										if (len(self.matrix[idx_x][idx_y]) > 0 or (idx_x == i and idx_y == j)):
+ 											# Search to next slot time
 											pass
+										else
+ 											# Check if the slot time match with matkul constraint
+ 											cek = self.check_matkul_constraint(self.matrix[idx_x][idx_y][0], idx_x, idx_y):
+ 											if (cek == 1):
+ 												# Found the slot
+ 												found = 1
+ 												(self.matrix[idx_x][idx_y]).append(conflicted_matkul)
+ 												del (self.matrix[i][j])[0]
+ 												self.tupel = (idx_matkul , idx_x, idx_y)
+ 												roundtrip = 0
+ 											else
+ 												# If not found the slot, check next slot
+ 												pass
+ 										if  (found == 1):
+ 											break
 									if (found == 1):
 										break
 								if (found == 1):
@@ -112,9 +123,9 @@ class HillClimbing:
 					if (found == 1):
 						break
 					else if (found == 0 and idx_matkul == len(self.list_idx)):
-						roundtrip+=1
+						roundtrip += 1
 
-			# Count conflict of new solution
+			# Count conflict of new solution, if cnt reaches 10 then it terminates
 			self.next_conflict = self.matrix.conflict_count()
 			if (self.next_conflict >= self.curr_conflict):
 				cnt += 1
