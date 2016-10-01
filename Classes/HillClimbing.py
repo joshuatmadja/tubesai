@@ -14,6 +14,7 @@ class HillClimbing:
 	def search_ruang_constraint(self, code, idx, day):
 		ans = (rooms[idx][3][day] - 1) * 24 + rooms[idx][code+1]
 		return ans
+	
 	# Return boolean value
 	def check_matkul_constraint(self, matkull, x, y):
 
@@ -83,26 +84,30 @@ class HillClimbing:
 
 						for idx_y in range (nRoom):
 							# Constraint slot waktu di matrix sesuai constraint ruangan
-							for day in range(len(rooms[idx_matkul][3])):
-								x_start =  self.search_ruang_constraint(0, idx, rooms[idx_matkul][3][day])
-								x_end = self.search_ruang_constraint(1, idx, rooms[idx_matkul][3][day])
-								for (idx_x) in range(x_start , x_end):
-									if (len(self.matrix[idx_x][idx_y]) > 0 or (idx_x == i and idx_y == j)):
-										# Search to next slot time
-										pass
-									else
-										# Check if the slot time match with matkul constraint
-										cek = self.check_matkul_constraint(self.matrix[idx_x][idx_y][0], idx_x, idx_y):
-										if (cek == 1):
-											# Found the slot
-											found = 1
-											(self.matrix[idx_x][idx_y]).append(conflicted_matkul)
-											del (self.matrix[i][j])[0]
-											self.tupel = (idx_matkul , idx_x, idx_y)
-											roundtrip = 0
-										else
-											# If not found the slot, check next slot
+							for ruang in range(len(rooms)):
+								for day in range(len(rooms[ruang][3])):
+									x_start =  self.search_ruang_constraint(0, idx, rooms[ruang][3][day])
+									x_end = self.search_ruang_constraint(1, idx, rooms[ruang][3][day])
+									for (idx_x) in range(x_start , x_end):
+										if (len(self.matrix[idx_x][idx_y]) > 0 or (idx_x == i and idx_y == j)):
+											# Search to next slot time
 											pass
+										
+										else
+											# Check if the slot time match with matkul constraint
+											cek = self.check_matkul_constraint(self.matrix[idx_x][idx_y][0], idx_x, idx_y):
+											if (cek == 1):
+												# Found the slot
+												found = 1
+												(self.matrix[idx_x][idx_y]).append(conflicted_matkul)
+												del (self.matrix[i][j])[0]
+												self.tupel = (idx_matkul , idx_x, idx_y)
+												roundtrip = 0
+											else
+												# If not found the slot, check next slot
+												pass
+										if  (found == 1):
+											break
 									if (found == 1):
 										break
 								if (found == 1):
