@@ -5,7 +5,9 @@ from tkinter import messagebox
 from tkinter import filedialog
 from Classes.Jadwal import Jadwal
 from Classes.Genetic.Genetic import Genetic
+from Classes.HillClimbing import HillClimbing
 from Classes.Assign import Assign
+
 from math import floor
 
 Days = ('Senin','Selasa','Rabu','Kamis','Jumat')
@@ -22,7 +24,7 @@ class form(Frame):
 		self.mulai()
 		self.jadwal = []
 		self.numberofConflicts = IntVar()
-		Assign()
+
 
 	def mulai(self):
 		self.grid()
@@ -156,7 +158,7 @@ class form(Frame):
 
 		labelPilihSolusi = tkinter.Label(self.parent,text=u"=======================PILIH SOLUSINYA=======================")
 		labelPilihSolusi.grid(row=2,pady=(5,0), sticky=N+E+S+W, columnspan=3)
-		printHC = tkinter.Button(self.parent, text=u"Hill Climbing").grid(column=0, row=3, pady=(5,10))
+		printHC = tkinter.Button(self.parent, text=u"Hill Climbing", command=self.runHillClimbing).grid(column=0, row=3, pady=(5,10))
 		printGA = tkinter.Button(self.parent, text=u"Genetic Algorithm", command = self.runGenetic).grid(column=1, row=3,pady=(5,10))
 		printRes = tkinter.Button(self.parent, text=u"Simulated Annealing", command=self.onClickShow).grid(column=0, row=3, pady=(5,10), columnspan=2)
 		labelFrame = tkinter.Label(self.parent, text=u"==========================================================").grid(row=4, columnspan=2)
@@ -339,6 +341,7 @@ class form(Frame):
 
 	def bacaRuang(self, nama_file):
 		J = Jadwal(nama_file)
+		Assign() # ini harus dipisah sebenernya
 		self.convertJadwalToRoomsAndSchedules(J)
 
 	# interface
@@ -388,6 +391,14 @@ class form(Frame):
 		Genetic.sort()
 		M = Genetic.convertToMatriks(Genetic.best())
 		self.interfaceMatriks(M)
+		self.onClickShow()
+
+	def runHillClimbing(self):
+		HillClimbing()
+		HillClimbing.init()
+		HillClimbing.calculate()
+		HillClimbing.finishing()
+		self.interfaceMatriks(HillClimbing.matrix_hasil)
 		self.onClickShow()
 
 class result(Frame):
