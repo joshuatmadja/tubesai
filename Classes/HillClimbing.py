@@ -65,9 +65,9 @@ class HillClimbing:
 			# Updating daftar_mata_kuliah
 			self.list_idx[self.tupel[0]].x = self.tupel[1]
 			self.list_idx[self.tupel[0]].y = self.tupel[2]
-			daftar_matkul_time[self.tupel[0]].j_selected = self.tupel[1] % 24
-			daftar_matkul_time[self.tupel[0]].h_selected = self.tupel[1] // 24
-			daftar_matkul_time[self.tupel[0]].r_selected = self.tupel[2] + 1
+			Assign.daftar_matkul_time[self.tupel[0]].j_selected = self.tupel[1] % 24
+			Assign.daftar_matkul_time[self.tupel[0]].h_selected = self.tupel[1] // 24
+			Assign.daftar_matkul_time[self.tupel[0]].r_selected = self.tupel[2] + 1
 
 			# MAIN ALGORITHM
 			# STEP 2 - Conflict checking & solving
