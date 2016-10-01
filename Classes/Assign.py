@@ -1,46 +1,54 @@
 from .Jadwal import Jadwal
-
+from .MatKulOnlyTime import MatKulOnlyTime
 class Assign:
 	daftar_matkul_time = []
 
-	def nama_to_ruang(nama):
-		for ruang in Jadwal.daftar_ruangan:
-			if ruang.nama == nama:
-				return ruang
-				break
+	@classmethod
+	def nama_to_ruang_idx(cls,nama):
+		n  = len(Jadwal.daftar_ruangan)
+		for idx in range(n):
+			if Jadwal.daftar_ruangan[idx].nama == nama:
+				return idx
+		return None
 
-	def cariruang(matkul):
+	@classmethod
+	def cariruang(cls, matkul):
 		temp_matkul_time = MatKulOnlyTime()
 		bol = False
 		if matkul.ruangan != '-':
-			ruang = nama_to_ruang(matkul.ruangan)
+			idx = cls.nama_to_ruang_idx(matkul.ruangan)
+			ruang = Jadwal.daftar_ruangan[idx]
 			for hari in matkul.hari:
-				if bol:
-					break
 				for haris in ruang.hari:
 					if hari == haris:
-						if matkul.jam_awal >= ruang.jam_awal:
-							if matkul.jam_awal + matkul.sks <= ruang.jam_akhir:
-								temp_matkul_time.setTime(ruang, matkul.jam_awal, hari, matkul.sks)
-								self.daftar_matkul_time.append(temp_matkul_time)
-								bol = True
-								break
-		else:
-			for ruang in Jadwal.daftar_ruangan:
+						if matkul.jam_awal >= ruang.jam_awal and matkul.jam_awal + matkul.sks <= ruang.jam_akhir:
+							temp_matkul_time.setTime(idx, matkul.jam_awal, hari, matkul.sks)
+							cls.daftar_matkul_time.append(temp_matkul_time)
+							bol = True
+							break
+
 				if bol:
 					break
+		else:
+			n = len(Jadwal.daftar_ruangan)
+			for idx in range(n):
+				ruang = Jadwal.daftar_ruangan[idx]
 				for hari in matkul.hari:
-					if bol:
-						break
 					for haris in ruang.hari:
 						if hari == haris:
-							if matkul.jam_awal >= ruang.jam_awal:
-								if matkul.jam_awal + matkul.sks <= ruang.jam_akhir:
-									temp_matkul_time.setTime(ruang, matkul.jam_awal, hari, matkul.sks)
-									self.daftar_matkul_time.append(temp_matkul_time)
-									bol = True
-									break
+							if matkul.jam_awal >= ruang.jam_awal and matkul.jam_awal + matkul.sks <= ruang.jam_akhir:
+								temp_matkul_time.setTime(idx, matkul.jam_awal, hari, matkul.sks)
+								cls.daftar_matkul_time.append(temp_matkul_time)
+								bol = True
+								break
+						if bol:
+							break
+					if bol:
+						break
+				if bol:
+					break
 
-	def masukkan():
+	@classmethod
+	def __init__(cls):
 		for matkul in Jadwal.daftar_mata_kuliah:
-			cariruang(matkul)
+			cls.cariruang(matkul)

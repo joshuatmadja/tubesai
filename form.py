@@ -5,6 +5,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 from Classes.Jadwal import Jadwal
 from Classes.Genetic.Genetic import Genetic
+from Classes.Assign import Assign
 from math import floor
 
 Days = ('Senin','Selasa','Rabu','Kamis','Jumat')
@@ -21,6 +22,7 @@ class form(Frame):
 		self.mulai()
 		self.jadwal = []
 		self.numberofConflicts = IntVar()
+		Assign()
 
 	def mulai(self):
 		self.grid()
@@ -381,6 +383,7 @@ class form(Frame):
 	def runGenetic(self):
 		Genetic()
 		Genetic.init()
+		Genetic.add(Assign.daftar_matkul_time)
 		Genetic.run(100)
 		Genetic.sort()
 		M = Genetic.convertToMatriks(Genetic.best())

@@ -152,7 +152,8 @@ class Genetic:
             self.inputs.append([])
             for x in range(n):
                 self.inputs[i].append(self.random_assign(x))
-    @staticmethod
+
+    @classmethod
     def add(self, jadwal):
         self.inputs.append(jadwal)
 

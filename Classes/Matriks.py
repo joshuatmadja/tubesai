@@ -14,6 +14,7 @@ class Matriks:
             for j in range(self.col):
                 self.matriks[i].append([])
 
+
     def conflict_count(self):
         total = 0
         for ruang in self.matriks:
