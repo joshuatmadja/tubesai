@@ -2,27 +2,25 @@ import copy
 import random
 from .Matriks import Matriks
 from .Jadwal import Jadwal
-from .form import Form
+from ..form import form
 from .Assign import Assign
 
 # kalo liat list, rooms[idx][3] itu list harinya
 
 class HillClimbing:
-	
 	# Calculate index x and y value from selected slot
 	# code = 0 means beginning idx x
 	# code = 1 means end idx x
 	def search_ruang_constraint(self, code, idx, day):
 		ans = (rooms[idx][3][day] - 1) * 24 + rooms[idx][code+1]
 		return ans
-
 	# Return boolean value
 	def check_matkul_constraint(self, matkull, x, y):
-		
+
 		banyak_hari = len(matkull[5])
 		for idx_hari in range(banyak_hari):
 			ans = 0
-			
+
 			# Check idx x (start and end), fulfill the constraint or not
 			# If selected slot x fulfill the constraint, continue the check.
 			# If not, end the looping, move check next matkul (conflicted or not)
@@ -32,7 +30,7 @@ class HillClimbing:
 				break
 
 			found = 0
-			
+
 			# If idx x fulfill the constraint, check room constraint
 			# Check if slot idx y fulfill the constraint
 			for idx_hari in range(len(matkull[1])):
@@ -42,7 +40,7 @@ class HillClimbing:
 					break
 			if (found == 1):
 				break
-		return ans 
+		return ans
 		# 0 means false, 1 means true
 
 	def first_initiate(self):
