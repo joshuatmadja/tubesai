@@ -45,24 +45,24 @@ class HillClimbing:
 
 	def first_initiate(self):
 		# STEP 1 - Take MatkulOnlyTime data (list) of Course
-		# convert jam and hari to index by formula
+		# convert to index by formula
 		nSchedule = len(Jadwal.daftar_mata_kuliah)
 		for i in range(nSchedule):
 			x = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected
-			y = Assign[i].daftar_matkul_time.r_selected - 1
+			y = Assign[i].daftar_matkul_time.r_selected
 			temp = (x , y)
 			self.list_idx.append(temp)
 			self.tupel = (0, self.list_idx[0].x, self.list_idx[0].y)
 
 	def calculate(self):
 		cnt = 0
-		while (self.next_conflict < self.curr_conflict or cnt < 10):
+		while self.next_conflict < self.curr_conflict or cnt < 10:
 			if (self.next_conflict < self.curr_conflict):
 				self.curr_conflict = self.next_conflict
 			self.list_temp = []
 			found = 0
 
-			# Updating daftar_mata_kuliah and list_idx
+			# Updating daftar_mata_kuliah
 			self.list_idx[self.tupel[0]].x = self.tupel[1]
 			self.list_idx[self.tupel[0]].y = self.tupel[2]
 			daftar_matkul_time[self.tupel[0]].j_selected = self.tupel[1] % 24
@@ -74,14 +74,13 @@ class HillClimbing:
 			roundtrip = 0
 			# cek muter
 			while (roundtrip != 2):
-
 				for idx_matkul in range(len(self.list_idx)):
 					i = self.list_idx[idx].x
 					j = self.list_idx[idx].y
 					if (len(self.matrix[i][j]) > 1):
 						list_temp = self.matrix[i][j]
 						conflicted_matkul = copy.deepcopy(list_temp[0])
-						
+
 						for idx_y in range (nRoom):
 							# Constraint slot waktu di matrix sesuai constraint ruangan
 							for day in range(len(rooms[idx_matkul][3])):
