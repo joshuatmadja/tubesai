@@ -7,11 +7,13 @@ class Matriks:
             self.row = r
         if c is not None:
             self.col = c
+
         self.matriks = []
         for i in range(self.row):
             self.matriks.append([])
             for j in range(self.col):
                 self.matriks[i].append([])
+
 
     def conflict_count(self):
         total = 0
