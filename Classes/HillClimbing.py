@@ -122,7 +122,7 @@ class HillClimbing:
 
 			# Count conflict of new solution, if cnt reaches 10 then it terminates
 			self.next_conflict = self.matrix.conflict_count()
-			if (self.next_conflict >= self.curr_conflict or not Found):
+			if (self.next_conflict >= self.curr_conflict or not found):
 				cnt += 1
 			else:
 				cnt = 0
