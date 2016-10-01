@@ -93,8 +93,8 @@ class HillClimbing:
 							# Constraint slot waktu di matrix sesuai constraint ruangan
 							for ruang in range(len(rooms)):
  								for day in range(len(rooms[ruang][3])):
- 									x_start =  self.search_ruang_constraint(0, idx, rooms[ruang][3][day])
- 									x_end = self.search_ruang_constraint(1, idx, rooms[ruang][3][day])
+ 									x_start =  self.search_ruang_constraint(0, idx_matkul, rooms[ruang][3][day])
+ 									x_end = self.search_ruang_constraint(1, idx_matkul, rooms[ruang][3][day])
  									for (idx_x) in range(x_start , x_end):
  										if (len(self.matrix[idx_x][idx_y]) > 0 or (idx_x == i and idx_y == j)):
  											# Search to next slot time
