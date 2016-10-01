@@ -122,7 +122,7 @@ class HillClimbing:
 				cnt = 0
 
 	def __init__(self):
-		self.matrix = Matriks()
+		self.matrix = Matriks(len(Jadwal.daftar_ruangan), 120)
 		self.curr_conflict = curr_matriks.conflict_count()
 		self.next_conflict = 0
 		self.list_idx = []
