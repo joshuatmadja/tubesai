@@ -1,12 +1,13 @@
 import copy
-import random
+from random import randint
 from .Matriks import Matriks
 from .Jadwal import Jadwal
 from .Assign import Assign
 
 # rooms itu punya form, ini pake jadwal dulu biar sama. roomsnya diganti Jadwal.daftar_ruangan
 class HillClimbing:
-
+	# global variable
+	matrix_hasil = []
 	# Calculate index x and y value from selected slot
 	# code = 0 means beginning idx x
 	# code = 1 means end idx x
@@ -50,48 +51,84 @@ class HillClimbing:
 		return False
 		# 0 means false, 1 means true
 
+
+
+	@classmethod
+	def insert_jadwal_into_matriks(cls):
+		nMatKul = len(Jadwal.daftar_mata_kuliah)
+		for i in range(nMatKul):
+			ruang = Assign.daftar_matkul_time[i].r_selected
+			waktu = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected
+			kuliah = copy.deepcopy(Jadwal.daftar_mata_kuliah[i]) # biar bikin object baru
+			cls.matrix[ruang][waktu].append(kuliah)
+
+		# copy yang pertama banget
+		cls.matrix_best = copy.deepcopy(cls.matrix)
 	@classmethod
 	def first_initiate(cls):
 		# STEP 1 - Take MatkulOnlyTime data (list) of Course
-		# convert to index by formula
-		nSchedule = len(Jadwal.daftar_mata_kuliah)
-		for i in range(nSchedule):
+		# convert to index by formula (dari Jadwal.daftar_matkul_time)
+		nMatKul = len(Jadwal.daftar_mata_kuliah)
+		for i in range(nMatKul):
 			ruang = Assign.daftar_matkul_time[i].r_selected
 			waktu = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected
 			temp = (ruang, waktu)
 			cls.list_idx.append(temp)
 
-		cls.tupel = (0, cls.list_idx[0][0], cls.list_idx[0][1])
+		cls.list_idx_best = copy.deepcopy(cls.list_idx)
+	# pindahkan jadwal suatu mata kuliah
+	@classmethod
+	def moveMatkul(cls, idx_matkul, ruang_awal, waktu_awal, ruang_akhir, waktu_akhir):
+		SKS = Jadwal.daftar_matkul_time[idx_matkul].sks
+
+		nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
+		# delete matkul dari yang lama
+		for idx_waktu in range(waktu_awal, waktu_awal + SKS):
+			banyak_matkul_di_slot = len(cls.matrix[ruang_awal][idx_waktu])
+			for j in range(banyak_matkul_di_slot):
+				if cls.matrix[ruang_awal][idx_waktu][j].nama == nama_matkul:
+					del cls.matrix[ruang_awal][idx_waktu][j]
+					break
+
+		# insert matkul ke yang baru
+		for idx_waktu in range(waktu_akhir, waktu_akhir + SKS):
+			kuliah = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
+			cls.matrix[ruang_akhir][idx_waktu].append(kuliah)
+
+		# masukin ke list_idx
+		cls.list_idx[idx_matkul] = (ruang_akhir, waktu_akhir)
 
 	@classmethod
 	def calculate(cls):
 		cnt = 0
 		while cnt < 10:
+
+			# kalo ketemu yang lebih bagus, dicopy semua
 			if (cls.next_conflict < cls.curr_conflict):
 				cls.curr_conflict = cls.next_conflict
-			list_temp = []
-			found = False
-
-			# Updating daftar_mata_kuliah
-			cls.list_idx[cls.tupel[0]] = (cls.tupel[1], cls.tupel[2]) # assign ke yang pertama
-
-			# ini ngapain, jangan mutasi Assign.daftar_matkul_time
-#			Assign.daftar_matkul_time[cls.tupel[0]].j_selected = cls.tupel[1] % 24
-#			Assign.daftar_matkul_time[cls.tupel[0]].h_selected = cls.tupel[1] // 24 + 1
-#			Assign.daftar_matkul_time[cls.tupel[0]].r_selected = cls.tupel[2]
+				cls.matrix_best = copy.deepcopy(cls.matrix)
+				cls.list_idx_best = copy.deepcopy(cls.list_idx)
 
 			# MAIN ALGORITHM
 			# STEP 2 - Conflict checking & solving
-			roundtrip = 0
 			# cek muter
+			roundtrip = 0
+			found = False
 			while (roundtrip != 2 and (not found)):
 				for idx_matkul in range(len(cls.list_idx)):
 					ruang_awal, waktu_awal = cls.list_idx[idx_matkul] # extract the tuple
 
 					if (len(cls.matrix[ruang_awal][waktu_awal]) > 1):
 						list_temp = cls.matrix[ruang_awal][waktu_awal]
-						conflicted_matkul = copy.deepcopy(list_temp[0])
 
+						# nyari matkul yang mau diubah
+						conflicted_matkul = []
+						nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul]
+						for i in range(len(list_temp)):
+							if list_temp[i].nama == nama_matkul:
+								conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
+
+						# nyari ruangan yang bisa diubah
 						nRoom = len(Jadwal.daftar_ruangan)
 						for idx_room in range(nRoom):
 							# Constraint slot waktu di matrix sesuai constraint ruangan
@@ -102,27 +139,24 @@ class HillClimbing:
 								jam_converted_end 	= cls.search_ruang_constraint(1, idx, idx_day)
 
 								# looping terhadap jam yang available, basis 120
-								for idx_waktu in range(jam_converted_start, jam_converted_end):
+								for idx_waktu_start in range(jam_converted_start, jam_converted_end):
 									# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-									if (len(cls.matrix[idx_room][idx_waktu] > 0) or (idx_room == ruang_awal and idx_waktu == waktu_awal)):
+									if (len(cls.matrix[idx_room][idx_waktu_start] > 0) or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
 										# Search to next slot time
 										continue
 									else:
 										# Check if the slot time match with matkul constraint
-										cek = cls.check_matkul_constraint(cls.matrix[idx_room][idx_waktu][0], idx_room, idx_waktu)
-										if (cek):
-											# Found the slot
+										time_and_space_matchs = cls.check_matkul_constraint(cls.matrix[idx_room][idx_waktu_start][0], idx_room, idx_waktu_start)
+										if (time_and_space_matchs): # Found the slot
 											found = True
-											cls.matrix[idx_room][idx_waktu].append(conflicted_matkul)
-											del (cls.matrix[ruang_awal][waktu_awal][0])
-											cls.tupel = (idx_matkul, idx_room, idx_waktuu)
+											cls.moveMatkul(idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
 									if found:
 										break
 							if found:
 								break
 						if found:
 							break
-				if ((not found) and (idx_matkul == len(cls.list_idx))):
+				if not found:
 					roundtrip += 1
 
 			# Count conflict of new solution, if cnt reaches 10 then it terminates
@@ -133,13 +167,23 @@ class HillClimbing:
 				cnt = 0
 
 	@classmethod
+	def finishing(cls):
+		cls.matrix_hasil = Matriks(len(Jadwal.daftar_ruangan), 120)
+		nRoom = len(Jadwal.daftar_ruangan)
+		for idx_room in range(nRoom):
+			for idx_waktu in range(120):
+				cls.matrix_hasil[idx_room][idx_waktu].append(copy.deepcopy(cls.matrix_best[idx_room][idx_waktu].nama))
+
+	@classmethod
 	def __init__(cls):
+		seed()
 		cls.matrix = Matriks(len(Jadwal.daftar_ruangan), 120)
+		cls.matrix_best = Matriks(len(Jadwal.daftar_ruangan), 120) # bedanya ini cuma nyimpen nama matkulnya doang
 		cls.curr_conflict = curr_matriks.conflict_count()
 		cls.next_conflict = 0
 		cls.list_idx = [] # punya urutan yang sama dengan Jadwal.daftar_mata_kuliah
-		cls.tupel = (0,0,0) # (idx_matkul, idx_room, idx_waktu) --> For updating list MatkulOnlyTime and list_idx
+		cls.list_idx_best = []
+		cls.first_initiate()
 
 # catetan :
-# ini belum ada random randomnya
-# list temp itu masih bingung
+# urutan milih didalemnya belum random
