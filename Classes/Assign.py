@@ -21,8 +21,8 @@ class Assign:
 			for hari in matkul.hari:
 				for haris in ruang.hari:
 					if hari == haris:
-						if matkul.jam_awal >= ruang.jam_awal and matkul.jam_awal + matkul.sks <= ruang.jam_akhir:
-							temp_matkul_time.setTime(idx, matkul.jam_awal, hari, matkul.sks)
+						if max(matkul.jam_awal, ruang.jam_awal) + matkul.sks <= min(matkul.jam_akhir, ruang.jam_akhir):
+							temp_matkul_time.setTime(idx, max(matkul.jam_awal, ruang.jam_awal), hari, matkul.sks)
 							cls.daftar_matkul_time.append(temp_matkul_time)
 							bol = True
 							break
@@ -36,8 +36,8 @@ class Assign:
 				for hari in matkul.hari:
 					for haris in ruang.hari:
 						if hari == haris:
-							if matkul.jam_awal >= ruang.jam_awal and matkul.jam_awal + matkul.sks <= ruang.jam_akhir:
-								temp_matkul_time.setTime(idx, matkul.jam_awal, hari, matkul.sks)
+							if max(matkul.jam_awal, ruang.jam_awal) + matkul.sks <= min(matkul.jam_akhir, ruang.jam_akhir):
+								temp_matkul_time.setTime(idx, max(matkul.jam_awal, ruang.jam_awal), hari, matkul.sks)
 								cls.daftar_matkul_time.append(temp_matkul_time)
 								bol = True
 								break
@@ -50,5 +50,6 @@ class Assign:
 
 	@classmethod
 	def __init__(cls):
+		cls.daftar_matkul_time = []
 		for matkul in Jadwal.daftar_mata_kuliah:
 			cls.cariruang(matkul)
