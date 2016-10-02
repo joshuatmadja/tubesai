@@ -6,6 +6,7 @@ from tkinter import filedialog
 import os
 from Classes.Jadwal import Jadwal
 from Classes.Genetic.Genetic import Genetic
+from Classes.SimulatedAnnealing.SimulatedAnnealing import SimulatedAnnealing
 from Classes.HillClimbing import HillClimbing
 from Classes.Assign import Assign
 
@@ -161,7 +162,7 @@ class form(Frame):
 		labelPilihSolusi.grid(row=2,pady=(5,0), sticky=N+E+S+W, columnspan=3)
 		printHC = tkinter.Button(self.parent, text=u"Hill Climbing", command=self.runHillClimbing).grid(column=0, row=3, pady=(5,10))
 		printGA = tkinter.Button(self.parent, text=u"Genetic Algorithm", command = self.runGenetic).grid(column=1, row=3,pady=(5,10))
-		printRes = tkinter.Button(self.parent, text=u"Simulated Annealing", command=self.onClickShow).grid(column=0, row=3, pady=(5,10), columnspan=2)
+		printRes = tkinter.Button(self.parent, text=u"Simulated Annealing", command=self.runSimulatedAnnealing).grid(column=0, row=3, pady=(5,10), columnspan=2)
 		labelFrame = tkinter.Label(self.parent, text=u"==========================================================").grid(row=4, columnspan=2)
 
 		self.entryFileVar = tkinter.StringVar()
@@ -402,6 +403,14 @@ class form(Frame):
 		HillClimbing.calculate()
 		HillClimbing.finishing()
 		self.interfaceMatriks(HillClimbing.matrix_hasil)
+		self.onClickShow()
+
+	def runSimulatedAnnealing(self):
+		SimulatedAnnealing()
+		SimulatedAnnealing.init()
+		SimulatedAnnealing.calculate()
+		SimulatedAnnealing.finishing()
+		self.interfaceMatriks(SimulatedAnnealing.matrix_hasil)
 		self.onClickShow()
 
 class result(Frame):
