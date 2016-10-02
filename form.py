@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
+import os
 from Classes.Jadwal import Jadwal
 from Classes.Genetic.Genetic import Genetic
 from Classes.HillClimbing import HillClimbing
@@ -165,9 +166,10 @@ class form(Frame):
 
 		self.entryFileVar = tkinter.StringVar()
 		self.entryFile = tkinter.Entry(self.parent, textvariable=self.entryFileVar, width=100).grid(column=0, row=5, columnspan=2, pady=(30,0))
-		self.entryFileVar.set('')
+		path = os.path.abspath('Testcase.txt')
+		self.entryFileVar.set(path)
 		buttonBrowse = tkinter.Button (self.parent, text=u"Telusuri", command=self.loadBerkas).grid(column=0, row=6, columnspan=2)
-		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang("Testcase.txt")).grid(column=0,row=7, columnspan=2)
+		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang(self.entryFileVar.get())).grid(column=0,row=7, columnspan=2)
 
 		printR = tkinter.Button(self.parent, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
 		printR.grid(column=0, row=1,pady=(10,20))
@@ -343,6 +345,7 @@ class form(Frame):
 		J = Jadwal(nama_file)
 		Assign() # ini harus dipisah sebenernya
 		self.convertJadwalToRoomsAndSchedules(J)
+		print('Testcase berhasil dibaca')
 
 	# interface
 
