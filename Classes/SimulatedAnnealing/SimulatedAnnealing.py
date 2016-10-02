@@ -43,7 +43,6 @@ class SimulatedAnnealing:
 			## Swap to create variant - nunggu respon Denden biar sama
 
 			new_conflict = new_solution.conflict_count()
-
 			# Decide & keep best solution
 			if (cls.acceptance_function(least_conflict, new_conflict, temperature) >= random.randrange(0, 1)):
 				current_solution = new_solution
