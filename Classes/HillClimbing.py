@@ -74,6 +74,57 @@ class HillClimbing:
 		cls.list_idx[idx_matkul] = (ruang_akhir, waktu_akhir)
 
 	@classmethod
+	def climbing(cls):
+		# MAIN ALGORITHM
+		# STEP 2 - Conflict checking & solving
+		# cek muter
+		roundtrip = 0
+		found = False
+		while (roundtrip != 2 and (not found)):
+			for idx_matkul in range(len(cls.list_idx)):
+				ruang_awal, waktu_awal = cls.list_idx[idx_matkul] # extract the tuple
+				if (len(cls.matrix.matriks[ruang_awal][waktu_awal]) > 1):
+					list_temp = cls.matrix.matriks[ruang_awal][waktu_awal]
+
+					# nyari matkul yang mau diubah
+					conflicted_matkul = None
+					nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
+					for i in range(len(list_temp)):
+						if list_temp[i].nama == nama_matkul:
+							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
+
+					# nyari ruangan yang bisa diubah
+					nRoom = len(Jadwal.daftar_ruangan)
+					for idx_room in range(nRoom):
+						# Constraint slot waktu di matrix sesuai constraint ruangan
+						nDay = len(Jadwal.daftar_ruangan[idx_room].hari)
+						for idx_day in range(nDay):
+							# convert ke jam basis 120
+							jam_converted_start = cls.search_ruang_constraint(0, idx_room, idx_day)
+							jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day)
+
+							# looping terhadap jam yang available, basis 120
+							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
+								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
+								if (len(cls.matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
+									# Search to next slot time
+									continue
+								else:
+									# Check if the slot time match with matkul constraint
+									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
+									if (time_and_space_matchs): # Found the slot
+										found = True
+										cls.moveMatkul(idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
+								if found:
+									break
+						if found:
+							break
+					if found:
+						break
+			if not found:
+				roundtrip += 1
+
+	@classmethod
 	def calculate(cls):
 		cnt = 0
 		while cnt < 10:
@@ -84,58 +135,12 @@ class HillClimbing:
 				cls.matrix_best = copy.deepcopy(cls.matrix)
 				cls.list_idx_best = copy.deepcopy(cls.list_idx)
 
-			# MAIN ALGORITHM
-			# STEP 2 - Conflict checking & solving
-			# cek muter
-			roundtrip = 0
-			found = False
-			while (roundtrip != 2 and (not found)):
-				for idx_matkul in range(len(cls.list_idx)):
-					ruang_awal, waktu_awal = cls.list_idx[idx_matkul] # extract the tuple
-					if (len(cls.matrix.matriks[ruang_awal][waktu_awal]) > 1):
-						list_temp = cls.matrix.matriks[ruang_awal][waktu_awal]
-
-						# nyari matkul yang mau diubah
-						conflicted_matkul = None
-						nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
-						for i in range(len(list_temp)):
-							if list_temp[i].nama == nama_matkul:
-								conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
-
-						# nyari ruangan yang bisa diubah
-						nRoom = len(Jadwal.daftar_ruangan)
-						for idx_room in range(nRoom):
-							# Constraint slot waktu di matrix sesuai constraint ruangan
-							nDay = len(Jadwal.daftar_ruangan[idx_room].hari)
-							for idx_day in range(nDay):
-								# convert ke jam basis 120
-								jam_converted_start = cls.search_ruang_constraint(0, idx_room, idx_day)
-								jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day)
-
-								# looping terhadap jam yang available, basis 120
-								for idx_waktu_start in range(jam_converted_start, jam_converted_end):
-									# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-									if (len(cls.matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
-										# Search to next slot time
-										continue
-									else:
-										# Check if the slot time match with matkul constraint
-										time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
-										if (time_and_space_matchs): # Found the slot
-											found = True
-											cls.moveMatkul(idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
-									if found:
-										break
-							if found:
-								break
-						if found:
-							break
-				if not found:
-					roundtrip += 1
+			# climbing method
+			cls.climbing()
 
 			# Count conflict of new solution, if cnt reaches 10 then it terminates
 			cls.next_conflict = cls.matrix.conflict_count()
-			if (cls.next_conflict >= cls.curr_conflict or not found):
+			if (cls.next_conflict >= cls.curr_conflict):
 				cnt += 1
 			else:
 				cnt = 0
