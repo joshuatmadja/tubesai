@@ -181,7 +181,7 @@ class form(Frame):
 
 		if self.fname:
 			try:
-				self.entryFileVar.set(self.fname)
+				self.entryFileVar.set(os.path.abspath(self.fname))
 			except:
 				messagebox.showerror("Kesalahan", "Terdapat kesalahan dalam membaca berkas")
 			return

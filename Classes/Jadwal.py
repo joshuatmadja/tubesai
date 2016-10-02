@@ -1,6 +1,5 @@
 from .Ruangan import Ruangan
 from .MatKul import MatKul
-from .Matriks import Matriks
 from .MatKulOnlyTime import MatKulOnlyTime
 
 class Jadwal:
@@ -8,6 +7,7 @@ class Jadwal:
     daftar_mata_kuliah = []
     total_pasangan = 0
 
+    @classmethod
     def process_ruangan_dan_mata_kuliah(self, ruangan_raw, mata_kuliah_raw):
 
         for ruangan in ruangan_raw:
@@ -34,6 +34,7 @@ class Jadwal:
             temp_total += self.daftar_mata_kuliah[i].sks
         self.total_pasangan += 1
 
+    @classmethod
     def read_file(self,ruangan_raw, mata_kuliah_raw, nama_file):
         f = open(nama_file, "r")
         mylist = f.read().splitlines()
@@ -49,12 +50,15 @@ class Jadwal:
                 mata_kuliah_raw.append(line)
         f.close()
 
+    @classmethod
     def init_file(self,nama_file):
         ruangan_raw = []
         mata_kuliah_raw = []
         self.read_file(ruangan_raw, mata_kuliah_raw, nama_file)
         self.process_ruangan_dan_mata_kuliah(ruangan_raw, mata_kuliah_raw)
 
+    @classmethod
     def __init__(self, nama_file):
+        self.daftar_ruangan = []
+        self.daftar_mata_kuliah = []
         self.init_file(nama_file)
-        self.matriks = Matriks(len(self.daftar_ruangan), 120)
