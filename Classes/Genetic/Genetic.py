@@ -1,6 +1,6 @@
-from ..MatKulOnlyTime import MatKulOnlyTime
-from ..Matriks import Matriks
-from ..Jadwal import Jadwal
+from ..Base.MatKulOnlyTime import MatKulOnlyTime
+from ..Base.Matriks import Matriks
+from ..Base.Jadwal import Jadwal
 from random import randint, shuffle, seed
 from math import ceil, floor
 

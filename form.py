@@ -4,11 +4,11 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 import os
-from Classes.Jadwal import Jadwal
+from Classes.Base.Jadwal import Jadwal
 from Classes.Genetic.Genetic import Genetic
 from Classes.SimulatedAnnealing.SimulatedAnnealing import SimulatedAnnealing
-from Classes.HillClimbing import HillClimbing
-from Classes.Assign import Assign
+from Classes.HillClimbing.HillClimbing import HillClimbing
+from Classes.Base.Assign import Assign
 
 from math import floor
 

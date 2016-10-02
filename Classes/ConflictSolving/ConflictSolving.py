@@ -14,7 +14,7 @@
 			# if another Course found, find another space
 			# if no empty space found, end looping
 			# end of loop = move to next Course
-from .Jadwal import Jadwal
+from ..Base.Jadwal import Jadwal
 import copy
 from random import randint, seed
 

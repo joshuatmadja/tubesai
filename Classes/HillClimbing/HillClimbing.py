@@ -1,9 +1,9 @@
 import copy
 from random import randint, seed
-from .Matriks import Matriks
-from .Jadwal import Jadwal
-from .Assign import Assign
-from .ConflictSolving import ConflictSolving
+from ..Base.Matriks import Matriks
+from ..Base.Jadwal import Jadwal
+from ..Base.Assign import Assign
+from ..ConflictSolving.ConflictSolving import ConflictSolving
 
 class HillClimbing:
 	@classmethod

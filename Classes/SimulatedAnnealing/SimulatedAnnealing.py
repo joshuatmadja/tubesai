@@ -1,10 +1,10 @@
 import copy
 import math
 import random
-from ..Jadwal import Jadwal
-from ..Matriks import Matriks
-from ..Assign import Assign
-from ..ConflictSolving import ConflictSolving
+from ..Base.Jadwal import Jadwal
+from ..Base.Matriks import Matriks
+from ..Base.Assign import Assign
+from ..ConflictSolving.ConflictSolving import ConflictSolving
 class SimulatedAnnealing:
 
 	# Acceptance function, energy represent conflict_count
