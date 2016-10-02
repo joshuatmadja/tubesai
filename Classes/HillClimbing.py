@@ -156,7 +156,9 @@ class HillClimbing:
 			ruang = Assign.daftar_matkul_time[i].r_selected
 			waktu = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected
 			kuliah = copy.deepcopy(Jadwal.daftar_mata_kuliah[i]) # biar bikin object baru
-			cls.matrix.matriks[ruang][waktu].append(kuliah)
+			SKS = Assign.daftar_matkul_time[i].sks
+			for j in range(waktu, waktu + SKS):
+				cls.matrix.matriks[ruang][j].append(kuliah)
 
 		# copy yang pertama banget
 		cls.matrix_best = copy.deepcopy(cls.matrix)
