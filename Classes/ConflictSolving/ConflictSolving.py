@@ -41,11 +41,12 @@ class ConflictSolving:
 			# If not, end the looping, move check next matkul (conflicted or not)
 			batas_waktu_awal = (matkul_selected.hari[idx_hari] - 1) * 24 + matkul_selected.jam_awal
 			batas_waktu_akhir = batas_waktu_awal + matkul_selected.sks #tambah sks
-			if (w_selected >= batas_waktu_awal and w_selected <= batas_waktu_akhir and r_selected == matkul_selected.ruangan):
-				return True
+			if (w_selected < batas_waktu_awal or w_selected > batas_waktu_akhir):
+				continue
 
 			# assumption : len(matkul_selected.ruangan) == 1
-			
+			if(r_selected == matkul_selected.ruangan):
+				return True
 
 #			# assumption : len(matkul_selected.ruangan) > 1
 #			for idx_hari in range(len(matkul_selected.ruangan)):
@@ -103,12 +104,12 @@ class ConflictSolving:
 						for idx_day in range(nDay):
 							# convert ke jam basis 120
 							jam_converted_start = cls.search_ruang_constraint(0, idx_room, idx_day)
-							jam_converted_end = cls.search_ruang_constraint(1, idx_room, idx_day)
+							jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day)
 
 							# looping terhadap jam yang available, basis 120
 							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
 								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-								if ((len(matrix.matriks[idx_room][idx_waktu_start]) > 0) or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
+								if (len(matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
 									# Search to next slot time
 									continue
 								else:
@@ -119,8 +120,6 @@ class ConflictSolving:
 										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
 								if found:
 									break
-							if found:
-								break
 						if found:
 							break
 					if found:
