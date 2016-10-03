@@ -94,7 +94,6 @@ class ConflictSolving:
 						if list_temp[i].nama == nama_matkul:
 							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
 
-
 					# nyari ruangan yang bisa diubah
 					nRoom = len(Jadwal.daftar_ruangan)
 					for idx_room in range(nRoom):
@@ -151,7 +150,7 @@ class ConflictSolving:
 					# Randomize idx_room
 					nRoom = list(range(len(Jadwal.daftar_ruangan)))
 					random.shuffle(nRoom)
-					for idx_room in nRoom
+					for idx_room in nRoom:
 						# Constraint slot waktu di matrix sesuai constraint ruangan
 						nDay = list(range(len(Jadwal.daftar_ruangan[idx_room].hari)))
 						random.shuffle(nDay)
@@ -186,7 +185,8 @@ class ConflictSolving:
 						break
 			if not found:
 				roundtrip += 1
-	
+
 	@classmethod
 	def __init__(cls):
+		seed()
 		pass

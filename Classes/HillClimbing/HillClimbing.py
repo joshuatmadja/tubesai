@@ -6,25 +6,73 @@ from ..Base.Assign import Assign
 from ..ConflictSolving.ConflictSolving import ConflictSolving
 
 class HillClimbing:
+
 	@classmethod
-	def calculate(cls):
+	def calculate_not_random(cls, matrix_nrb, list_idx_nrb):
+		curr_conflict_not_random = cls.curr_conflict
 		cnt = 0
 		while cnt < 10:
-			matrix = copy.deepcopy(cls.matrix_best)
-			list_idx = copy.deepcopy(cls.list_idx_best)
+			matrix = copy.deepcopy(matrix_nrb)
+			list_idx = copy.deepcopy(list_idx_nrb)
 
 			# climbing method
 			ConflictSolving.climbing(matrix, list_idx)
 
 			# Count conflict of new solution, if cnt reaches 10 then it terminates
 			next_conflict = matrix.conflict_count()
-			if (next_conflict >= cls.curr_conflict):
+			if (next_conflict >= curr_conflict_not_random):
 				cnt += 1
 			else:
 				cnt = 0
-				cls.curr_conflict = next_conflict
-				cls.matrix_best = matrix
-				cls.list_idx_best = list_idx
+				curr_conflict_not_random = next_conflict
+				matrix_nrb = copy.deepcopy(matrix)
+				list_idx_nrb = copy.deepcopy(list_idx)
+
+		return matrix_nrb
+
+	@classmethod
+	def calculate_random(cls, matrix_random_best, list_idx_random_best):
+		curr_conflict_random = cls.curr_conflict
+		cnt = 0
+		while cnt < 10:
+			matrix = copy.deepcopy(matrix_random_best)
+			list_idx = copy.deepcopy(list_idx_random_best)
+
+			# climbing method
+			ConflictSolving.climbingrandom(matrix, list_idx)
+
+			# Count conflict of new solution, if cnt reaches 10 then it terminates
+			next_conflict = matrix.conflict_count()
+			if (next_conflict >= curr_conflict_random):
+				cnt += 1
+			else:
+				cnt = 0
+				curr_conflict_random = next_conflict
+				matrix_random_best = copy.deepcopy(matrix)
+				list_idx_random_best = copy.deepcopy(list_idx)
+
+		return matrix_random_best
+
+	@classmethod
+	def calculate(cls):
+		matrix_nrb = copy.deepcopy(cls.matrix_best)
+		list_idx_nrb = copy.deepcopy(cls.list_idx_best)
+
+		matrix_rb = copy.deepcopy(cls.matrix_best)
+		list_idx_rb = copy.deepcopy(cls.list_idx_best)
+
+		matrix_nrb = cls.calculate_not_random(matrix_nrb, list_idx_nrb)
+		matrix_rb = cls.calculate_random(matrix_rb, list_idx_rb)
+
+		curr_conflict_not_random = matrix_nrb.conflict_count()
+		curr_conflict_random = matrix_rb.conflict_count()
+
+		if(curr_conflict_not_random < curr_conflict_random):
+			cls.curr_conflict = curr_conflict_not_random
+			cls.matrix_best = matrix_nrb
+		else:
+			cls.curr_conflict = curr_conflict_random
+			cls.matrix_best = matrix_rb
 
 	@classmethod
 	def insert_jadwal_into_matriks(cls):
