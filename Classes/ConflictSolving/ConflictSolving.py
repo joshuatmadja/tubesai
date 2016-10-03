@@ -119,7 +119,6 @@ class ConflictSolving:
 										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
 								if found:
 									break
-							print ("")
 						if found:
 							break
 					if found:

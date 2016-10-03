@@ -10,7 +10,6 @@ class HillClimbing:
 	def calculate(cls):
 		cnt = 0
 		while cnt < 10:
-			print (cnt)
 			matrix = copy.deepcopy(cls.matrix_best)
 			list_idx = copy.deepcopy(cls.list_idx_best)
 

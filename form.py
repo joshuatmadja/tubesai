@@ -341,7 +341,7 @@ class form(Frame):
 		for i in range(self.nSchedule):
 			tempS = J.daftar_mata_kuliah[i]
 			self.schedules.append((tempS.nama, tempS.ruangan, tempS.jam_awal, tempS.jam_akhir, tempS.sks, tempS.hari))
-		
+
 
 	def bacaRuang(self):
 		nama_file=self.entryFileVar.get()
@@ -361,7 +361,6 @@ class form(Frame):
 			for j in range(120):
 				if len(M.matriks[i][j]) != 0:
 					total_keisi += 1
-		print (str(total_keisi) + ' ' + str(total_slot))
 		return 100 * total_keisi / total_slot
 
 	def interfaceMatriks(self, M): #M merupakan Matriks
