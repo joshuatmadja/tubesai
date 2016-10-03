@@ -119,6 +119,8 @@ class ConflictSolving:
 										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
 								if found:
 									break
+							if found:
+								break
 						if found:
 							break
 					if found:
@@ -126,6 +128,64 @@ class ConflictSolving:
 			if not found:
 				roundtrip += 1
 
+	@classmethod
+	def climbingrandom(cls, matrix, list_idx):
+		# MAIN ALGORITHM
+		# Using random to choose which slot will system try to place the conflicted_matkul
+		roundtrip = 0
+		found = False
+		while (roundtrip != 2 and (not found)):
+			for idx_matkul in range(len(list_idx)):
+				ruang_awal, waktu_awal = list_idx[idx_matkul] # extract the tuple
+				if (len(matrix.matriks[ruang_awal][waktu_awal]) > 1):
+					list_temp = matrix.matriks[ruang_awal][waktu_awal]
+					# nyari matkul yang mau diubah
+					conflicted_matkul = None
+					nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
+					for i in range(len(list_temp)):
+						if list_temp[i].nama == nama_matkul:
+							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
+
+					# nyari ruangan yang bisa diubah
+					# Randomize idx_room
+					nRoom = list(range(len(Jadwal.daftar_ruangan)))
+					random.shuffle(nRoom)
+					for idx_room in nRoom
+						# Constraint slot waktu di matrix sesuai constraint ruangan
+						nDay = list(range(len(Jadwal.daftar_ruangan[idx_room].hari)))
+						random.shuffle(nDay)
+						for idx_day in nDay:
+							# convert ke jam basis 120
+							jam_converted_start = cls.search_ruang_constraint(0, idx_room, idx_day)
+							jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day) - Jadwal.daftar_mata_kuliah[idx_matkul].sks + 1
+
+							# ini kan available ruangannya
+							# looping terhadap jam yang available, basis 120
+							# Randomize idx_waktu_start
+							jam_converted_diff = list(range(jam_converted_start, jam_converted_end))
+							random.shuffle(jam_converted_diff)
+							for idx_waktu_start in jam_converted_diff:
+								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
+								if (len(matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
+									# Search to next slot time
+									continue
+								else:
+									# Check if the slot time match with matkul constraint
+									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
+									if (time_and_space_matchs): # Found the slot
+										found = True
+										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
+								if found:
+									break
+							if found:
+								break
+						if found:
+							break
+					if found:
+						break
+			if not found:
+				roundtrip += 1
+	
 	@classmethod
 	def __init__(cls):
 		pass
