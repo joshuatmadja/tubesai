@@ -258,7 +258,7 @@ class form(Frame):
 		print(self.rooms)
 
 	def onClickShow(self):
-		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam, self.numberofConflicts]
+		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam, self.numberofConflicts, self.freePercentage]
 		app = Toplevel(self.parent)
 		childWindow = result(app, dataPass, self)
 		#app.title('Result')
@@ -351,11 +351,25 @@ class form(Frame):
 		print('Testcase berhasil dibaca')
 
 	# interface
+	def space_percentage(self, M):
+		total_slot = 0
+		for i in range(self.nRoom):
+			total_slot += (Jadwal.daftar_ruangan[i].jam_akhir - Jadwal.daftar_ruangan[i].jam_awal) * len(Jadwal.daftar_ruangan[i].hari)
+
+		total_keisi = 0
+		for i in range(self.nRoom):
+			for j in range(120):
+				if len(M.matriks[i][j]) != 0:
+					total_keisi += 1
+		print (str(total_keisi) + ' ' + str(total_slot))
+		return 100 * total_keisi / total_slot
 
 	def interfaceMatriks(self, M): #M merupakan Matriks
 		self.hasilPagi = []
 		self.hasilMalam = []
 		self.numberofConflicts=M.conflict_count()
+		self.freePercentage = self.space_percentage(M)
+
 		for i in range(self.nRoom):
 			self.hasilPagi.append([])
 			self.hasilMalam.append([])
@@ -459,6 +473,7 @@ class result(Frame):
 		self.hasilPagi = self.lists[4]
 		self.hasilMalam = self.lists[5]
 		self.numberofConflicts=self.lists[6]
+		self.freePercentage = self.lists[7]
 
 		style = ttk.Style(self.parent)
 		style.configure('Treeview',rowheight=20)
@@ -506,6 +521,8 @@ class result(Frame):
 		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=4, sticky="e")
 		labelNumOfConflicts = tkinter.Label(self.parent, text=self.numberofConflicts).grid(column=1, row=4, sticky="w")
 
+		labelPersen = tkinter.Label(self.parent, text=u"Percentage : ").grid(column=0, row=5, sticky="e")
+		labelNumOfPercentage = tkinter.Label(self.parent, text=str(self.freePercentage)+' %').grid(column=1, row=5, sticky="w")
 
 if __name__ == "__main__":
 	root = Tk()
