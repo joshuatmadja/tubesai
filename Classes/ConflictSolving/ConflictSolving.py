@@ -40,12 +40,8 @@ class ConflictSolving:
 			# If selected slot x fulfill the constraint, continue the check.
 			# If not, end the looping, move check next matkul (conflicted or not)
 			batas_waktu_awal = (matkul_selected.hari[idx_hari] - 1) * 24 + matkul_selected.jam_awal
-			batas_waktu_akhir = batas_waktu_awal + matkul_selected.sks #tambah sks
-			if (w_selected < batas_waktu_awal or w_selected > batas_waktu_akhir):
-				continue
-
-			# assumption : len(matkul_selected.ruangan) == 1
-			if(r_selected == matkul_selected.ruangan):
+			batas_waktu_akhir = batas_waktu_awal + matkul_selected.jam_akhir - matkul_selected.jam_awal #tambah sks
+			if (w_selected >= batas_waktu_awal and w_selected + matkul_selected.sks <= batas_waktu_akhir and (matkul_selected.ruangan == '-' or Jadwal.daftar_ruangan[r_selected].nama == matkul_selected.ruangan)):
 				return True
 
 #			# assumption : len(matkul_selected.ruangan) > 1
@@ -57,7 +53,7 @@ class ConflictSolving:
 
 	@classmethod
 	def moveMatkul(cls, matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, ruang_akhir, waktu_akhir):
-		SKS = Jadwal.daftar_matkul_time[idx_matkul].sks
+		SKS = Jadwal.daftar_mata_kuliah[idx_matkul].sks
 
 		nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
 		# delete matkul dari yang lama
@@ -88,13 +84,13 @@ class ConflictSolving:
 				ruang_awal, waktu_awal = list_idx[idx_matkul] # extract the tuple
 				if (len(matrix.matriks[ruang_awal][waktu_awal]) > 1):
 					list_temp = matrix.matriks[ruang_awal][waktu_awal]
-
 					# nyari matkul yang mau diubah
 					conflicted_matkul = None
 					nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
 					for i in range(len(list_temp)):
 						if list_temp[i].nama == nama_matkul:
 							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
+
 
 					# nyari ruangan yang bisa diubah
 					nRoom = len(Jadwal.daftar_ruangan)
@@ -104,8 +100,9 @@ class ConflictSolving:
 						for idx_day in range(nDay):
 							# convert ke jam basis 120
 							jam_converted_start = cls.search_ruang_constraint(0, idx_room, idx_day)
-							jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day)
+							jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day) - Jadwal.daftar_mata_kuliah[idx_matkul].sks + 1
 
+							# ini kan available ruangannya
 							# looping terhadap jam yang available, basis 120
 							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
 								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
@@ -120,6 +117,7 @@ class ConflictSolving:
 										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
 								if found:
 									break
+							print ("")
 						if found:
 							break
 					if found:
