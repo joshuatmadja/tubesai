@@ -81,9 +81,9 @@ class form(Frame):
 		buttonRuangan.grid(column=0, row=9, columnspan=9, padx=(10,10), pady=(10,0), sticky="s")
 
 		labelHapusR = tkinter.Label(frRuang, text=u"Hapus Ruangan").grid(column=0, row=10, columnspan=2, pady=(20,0),sticky="e")
-		self.delRuang=tkinter.IntVar()
+		self.delRuang=tkinter.StringVar()
+		self.delRuang.set("0")
 		self.delRuangBox = tkinter.Entry(frRuang, textvariable=self.delRuang, width=3, justify="right").grid(column=2, row=10, sticky="e",pady=(20,0))
-		self.delRuang.set(0)
 		buttonHapusR = tkinter.Button(frRuang, text=u"Hapus",command=self.onClickDeleteRuang).grid(column=3,row=10,padx=(5,0),pady=(20,0),columnspan=4)
 
 		frJadwal = ttk.Frame(self.parent, borderwidth=2, relief="solid")
@@ -152,10 +152,11 @@ class form(Frame):
 		buttonJadwal.grid(column=0, row=9, columnspan=9, padx=(10,10), pady=(10,0), sticky="s")
 
 		labelHapusJ = tkinter.Label(frJadwal, text=u"Hapus Jadwal").grid(column=0, row=10, columnspan=2, pady=(20,0),sticky="e")
-		self.delJadwal=tkinter.IntVar()
+		self.delJadwal=tkinter.StringVar()
+		self.delJadwal.set("0")
 		self.delJadwalBox = tkinter.Entry(frJadwal, textvariable=self.delJadwal, width=3, justify="right").grid(column=2, row=10, sticky="e",pady=(20,0))
-		self.delJadwal.set(0)
-		buttonHapusR = tkinter.Button(frJadwal, text=u"Hapus").grid(column=3,row=10,padx=(5,0),pady=(20,0),columnspan=4)
+
+		buttonHapusR = tkinter.Button(frJadwal, text=u"Hapus", command=self.onClickDeleteJadwal).grid(column=3,row=10,padx=(5,0),pady=(20,0),columnspan=4)
 
 
 		labelPilihSolusi = tkinter.Label(self.parent,text=u"=======================PILIH SOLUSINYA=======================")
@@ -304,23 +305,35 @@ class form(Frame):
 		print(self.schedules)
 
 	def onClickDeleteRuang(self):
+		idx = -1
+		for i in range(self.nRoom):
+			if(self.rooms[i][0] == self.delRuang.get()):
+				idx = i
+
 		if(self.nRoom==0):
 			msg=messagebox.showerror('Kesalahan','Ruangan masih kosong')
-		elif(self.delRuang.get()>self.rooms.length):
+		elif(idx == -1):
 			msg=messagebox.showerror('Kesalahan','ID Ruangan tidak ditemukan')
-		elif(messagebox.askyesno('Konfirmasi','Anda yakin ingin menghapus ruangan '+self.rooms[self.delRuang.get()][0]+'?')):
-			print('Ruangan '+self.rooms[self.delRuang.get()][0]+' terhapus')
-			self.rooms.pop(self.delRuang.get())
+		elif(messagebox.askyesno('Konfirmasi','Anda yakin ingin menghapus ruangan '+self.rooms[idx][0]+'?')):
+			print('Ruangan '+self.rooms[idx][0]+' terhapus')
+			del self.rooms[idx]
+			del Jadwal.daftar_ruangan[idx]
 			self.nRoom-=1
 
 	def onClickDeleteJadwal(self):
+		idx = -1
+		for i in range(self.nSchedule):
+			if(self.schedules[i][0] == self.delJadwal.get()):
+				idx = i
+
 		if(self.nSchedule==0):
 			msg=messagebox.showerror('Kesalahan','Jadwal masih kosong')
-		elif(self.delJadwal.get()>self.schedules.length):
+		elif(idx == -1):
 			msg=messagebox.showerror('Kesalahan','ID Jadwal tidak ditemukan')
-		elif(messagebox.askyesno('Konfirmasi','Anda yakin ingin menghapus ruangan '+self.schedules[self.delJadwal.get()][0]+'?')):
-			print('Jadwal '+self.schedules[self.delJadwal.get()][0]+' terhapus')
-			self.schedules.pop(self.delJadwal.get())
+		elif(messagebox.askyesno('Konfirmasi','Anda yakin ingin menghapus ruangan '+self.schedules[idx][0]+'?')):
+			print('Jadwal ' + self.schedules[idx][0] + ' terhapus')
+			del self.schedules[idx]
+			del Jadwal.daftar_mata_kuliah[idx]
 			self.nSchedule-=1
 
 	def setRuang(self,value):
@@ -346,7 +359,6 @@ class form(Frame):
 	def bacaRuang(self):
 		nama_file=self.entryFileVar.get()
 		J = Jadwal(nama_file)
-		Assign() # ini harus dipisah sebenernya
 		self.convertJadwalToRoomsAndSchedules(J)
 		print('Testcase berhasil dibaca')
 
@@ -422,6 +434,7 @@ class form(Frame):
 
 	# Algorithm
 	def runGenetic(self):
+		Assign()
 		Genetic()
 		Genetic.init()
 		Genetic.add(Assign.daftar_matkul_time)
@@ -433,6 +446,7 @@ class form(Frame):
 		self.onClickShow()
 
 	def runHillClimbing(self):
+		Assign()
 		HillClimbing()
 		HillClimbing.init()
 		HillClimbing.calculate()
@@ -442,6 +456,7 @@ class form(Frame):
 		self.onClickShow()
 
 	def runSimulatedAnnealing(self):
+		Assign()
 		SimulatedAnnealing()
 		SimulatedAnnealing.init()
 		SimulatedAnnealing.calculate()

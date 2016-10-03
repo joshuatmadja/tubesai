@@ -26,8 +26,6 @@ class HillClimbing:
 				cls.matrix_best = matrix
 				cls.list_idx_best = list_idx
 
-
-
 	@classmethod
 	def insert_jadwal_into_matriks(cls):
 		cls.matrix_best = Matriks(len(Jadwal.daftar_ruangan), 120)
