@@ -44,9 +44,9 @@ class Assign:
 						if max(matkul.jam_awal, ruang.jam_awal) + matkul.sks <= min(matkul.jam_akhir, ruang.jam_akhir):
 							temp_matkul_time.setTime(idx, max(matkul.jam_awal, ruang.jam_awal), hari, matkul.sks)
 							kosong = self.hitung_kosong(temp_matkul_time.r_selected, temp_matkul_time.j_selected, min(matkul.jam_akhir, ruang.jam_akhir))
-							a = min(kosong, matkul.sks)
-							b = max(kosong, matkul.sks)
-							kosong = b - a
+							kosong = kosong - matkul.sks
+							if kosong < 0:
+								kosong = abs(kosong) + 100
 							daftar_kosong.append(kosong)
 							daftar_temp.append(temp_matkul_time)
 						
@@ -60,10 +60,9 @@ class Assign:
 							if max(matkul.jam_awal, ruang.jam_awal) + matkul.sks <= min(matkul.jam_akhir, ruang.jam_akhir):
 								temp_matkul_time.setTime(idx, max(matkul.jam_awal, ruang.jam_awal), hari, matkul.sks)
 								kosong = self.hitung_kosong(temp_matkul_time.r_selected, temp_matkul_time.j_selected, min(matkul.jam_akhir, ruang.jam_akhir))
-								a = min(kosong, matkul.sks)
-								b = max(kosong, matkul.sks)
-								kosong = b - a
 								kosong = kosong - matkul.sks
+								if kosong < 0:
+									kosong = abs(kosong) + 100
 								daftar_kosong.append(kosong)
 								daftar_temp.append(temp_matkul_time)
 						
