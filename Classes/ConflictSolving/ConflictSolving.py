@@ -41,8 +41,8 @@ class ConflictSolving:
 			# If not, end the looping, move check next matkul (conflicted or not)
 			batas_waktu_awal = (matkul_selected.hari[idx_hari] - 1) * 24 + matkul_selected.jam_awal
 			batas_waktu_akhir = batas_waktu_awal + matkul_selected.sks #tambah sks
-			if (w_selected < batas_waktu_awal or w_selected > batas_waktu_akhir):
-				continue
+			if (w_selected >= batas_waktu_awal or w_selected <= batas_waktu_akhir):
+				break
 
 			# assumption : len(matkul_selected.ruangan) == 1
 			if(r_selected == matkul_selected.ruangan):
@@ -109,7 +109,7 @@ class ConflictSolving:
 							# looping terhadap jam yang available, basis 120
 							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
 								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-								if (len(matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
+								if ((len(matrix.matriks[idx_room][idx_waktu_start]) > 0) or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
 									# Search to next slot time
 									continue
 								else:
