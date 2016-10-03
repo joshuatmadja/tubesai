@@ -261,6 +261,7 @@ class form(Frame):
 		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam, self.numberofConflicts]
 		app = Toplevel(self.parent)
 		childWindow = result(app, dataPass, self)
+		childWindow.geometry("800x600")
 		#app.title('Result')
 		#print(self.nRoom)
 
@@ -341,13 +342,13 @@ class form(Frame):
 		for i in range(self.nSchedule):
 			tempS = J.daftar_mata_kuliah[i]
 			self.schedules.append((tempS.nama, tempS.ruangan, tempS.jam_awal, tempS.jam_akhir, tempS.sks, tempS.hari))
+		print('Testcase berhasil dibaca')
 
 	def bacaRuang(self, nama_file):
 		J = Jadwal(nama_file)
 		Assign() # ini harus dipisah sebenernya
 		self.convertJadwalToRoomsAndSchedules(J)
-		print('Testcase berhasil dibaca')
-
+		
 	# interface
 
 	def interfaceMatriks(self, M): #M merupakan Matriks
@@ -383,7 +384,7 @@ class form(Frame):
 						n = len(self.hasilPagi[i][j][k])
 						for l in range(n):
 							if(tempstr != ''):
-								tempstr += '\n'
+								tempstr += ' '
 							tempstr += self.hasilPagi[i][j][k][l]
 						self.hasilPagi[i][j][k] = []
 						self.hasilPagi[i][j][k].append(tempstr)
@@ -395,7 +396,7 @@ class form(Frame):
 						n = len(self.hasilMalam[i][j][k])
 						for l in range(n):
 							if(tempstr != ''):
-								tempstr += '\n'
+								tempstr += ' '
 							tempstr += self.hasilMalam[i][j][k][l]
 						self.hasilMalam[i][j][k] = []
 						self.hasilMalam[i][j][k].append(tempstr)
@@ -456,8 +457,13 @@ class result(Frame):
 		self.numberofConflicts=IntVar()
 		self.numberofConflicts.set(self.lists[6])
 
-		tabel = ttk.Treeview(self.parent)
+		style = ttk.Style(self.parent)
+		style.configure('Treeview',rowheight=20)
+		tabel = ttk.Treeview(self.parent, height=6)
 		tabel.grid(column=0, row=0,columnspan=2)
+		tabelScrollY = ttk.Scrollbar(self.parent,orient='vertical',command=tabel.yview).grid(column=2,row=0,sticky='ns')
+		tabelScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel.xview).grid(column=0,row=1,columnspan=2,sticky='ew')		
+		#tabel.configure(yscroll=tabelScroll.set)
 		Time1=('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00')
 		Time2= ('12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00')
 
@@ -465,17 +471,19 @@ class result(Frame):
 		tabel.heading("#0", text="Ruangan")
 		tabel["columns"]=Time1
 		for d in Time1:
-			tabel.column(d,width=70)
+			tabel.column(d,minwidth=70,width=70,anchor="center")
 			tabel.heading(d, text=d)
 
-		tabel1=ttk.Treeview(self.parent)
-		tabel1.grid(column=0,row=1,columnspan=2)
-
+		tabel1=ttk.Treeview(self.parent,height=6)
+		tabel1.grid(column=0,row=2,columnspan=2)
+		tabel1ScrollY = ttk.Scrollbar(self.parent,orient='vertical',command=tabel1.yview).grid(column=2,row=2,sticky='ns')
+		tabel1ScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel1.xview).grid(column=0,row=3,columnspan=2,sticky='ew')		
+		#tabel1.configure(yscroll=tabel1Scroll.set)
 		tabel1.column("#0",width=100)
 		tabel1.heading("#0",text="Ruangan")
 		tabel1["columns"]=Time2
 		for d in Time2:
-			tabel1.column(d,width=70)
+			tabel1.column(d,minwidth=70,width=70, anchor="center")
 			tabel1.heading(d,text=d)
 
 		print(self.nRoom)
@@ -492,8 +500,8 @@ class result(Frame):
 				i+=1
 
 
-		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=2, sticky="e")
-		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=2, sticky="w")
+		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=4, sticky="e")
+		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=4, sticky="w")
 		self.numberofConflicts.set(0)
 
 
