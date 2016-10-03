@@ -41,14 +41,13 @@ class ConflictSolving:
 			# If not, end the looping, move check next matkul (conflicted or not)
 			batas_waktu_awal = (matkul_selected.hari[idx_hari] - 1) * 24 + matkul_selected.jam_awal
 			batas_waktu_akhir = batas_waktu_awal + matkul_selected.sks #tambah sks
-			if (w_selected >= batas_waktu_awal and w_selected <= batas_waktu_akhir):
-				break
+			if (w_selected >= batas_waktu_awal and w_selected <= batas_waktu_akhir and r_selected == matkul_selected.ruangan):
+				return True
+			
 
 			# assumption : len(matkul_selected.ruangan) == 1
-			if(r_selected == matkul_selected.ruangan):
-				return True
-
-#			# assumption : len(matkul_selected.ruangan) > 1
+			
+			# assumption : len(matkul_selected.ruangan) > 1
 #			for idx_hari in range(len(matkul_selected.ruangan)):
 #				if (y == matkul_selected.ruangan[idx_hari]):
 #					return 1
