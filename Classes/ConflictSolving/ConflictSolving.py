@@ -16,6 +16,7 @@
 			# end of loop = move to next Course
 from ..Base.Jadwal import Jadwal
 import copy
+import random
 from random import randint, seed
 
 class ConflictSolving:
