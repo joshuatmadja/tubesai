@@ -136,9 +136,11 @@ class Genetic:
                     self.mutate(child)
 
                 self.result.append(child)
+            self.sort()
+            self.result = deepcopy(self.result[91:])
             self.result.extend(self.inputs)
             self.sort()
-            self.inputs = deepcopy(self.result[101:])
+            self.inputs = deepcopy(self.result[10:])
 
     @classmethod
     def init(self):

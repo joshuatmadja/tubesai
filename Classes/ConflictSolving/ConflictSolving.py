@@ -82,6 +82,12 @@ class ConflictSolving:
 		# cek muter
 		roundtrip = 0
 		found = False
+		minconf = -1
+		idx_matkul_selected = -1
+		ruang_awal_selected = -1
+		waktu_awal_selected = -1
+		idx_room_selected = -1
+		idx_waktu_start_selected = -1
 		while (roundtrip != 2 and (not found)):
 			for idx_matkul in range(len(list_idx)):
 				ruang_awal, waktu_awal = list_idx[idx_matkul] # extract the tuple
@@ -108,15 +114,26 @@ class ConflictSolving:
 							# looping terhadap jam yang available, basis 120
 							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
 								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-								if (len(matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
-									# Search to next slot time
+								if (idx_room == ruang_awal and idx_waktu_start == waktu_awal):
 									continue
 								else:
 									# Check if the slot time match with matkul constraint
+									SKS = Jadwal.daftar_mata_kuliah[idx_matkul].sks
+									totalconflict = 0
+									for i in range(idx_waktu_start, idx_waktu_start + SKS):
+										panjang = len(matrix.matriks[idx_room][i]) + 1
+										totalconflict += (panjang * (panjang-1)) // 2
 									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
 									if (time_and_space_matchs): # Found the slot
-										found = True
-										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
+										if(minconf == -1 or minconf > totalconflict):
+											minconf = totalconflict
+											idx_matkul_selected = idx_matkul
+											ruang_awal_selected = ruang_awal
+											waktu_awal_selected = waktu_awal
+											idx_room_selected = idx_room
+											idx_waktu_start_selected = idx_waktu_start
+											if(minconf == 0):
+												found = True
 								if found:
 									break
 							if found:
@@ -128,12 +145,21 @@ class ConflictSolving:
 			if not found:
 				roundtrip += 1
 
+		if (minconf != -1):
+			cls.moveMatkul(matrix, list_idx, idx_matkul_selected, ruang_awal_selected, waktu_awal_selected, idx_room_selected, idx_waktu_start_selected)
+
 	@classmethod
 	def climbingrandom(cls, matrix, list_idx):
 		# MAIN ALGORITHM
 		# Using random to choose which slot will system try to place the conflicted_matkul
 		roundtrip = 0
 		found = False
+		minconf = -1
+		idx_matkul_selected = -1
+		ruang_awal_selected = -1
+		waktu_awal_selected = -1
+		idx_room_selected = -1
+		idx_waktu_start_selected = -1
 		while (roundtrip != 2 and (not found)):
 			for idx_matkul in range(len(list_idx)):
 				ruang_awal, waktu_awal = list_idx[idx_matkul] # extract the tuple
@@ -166,15 +192,26 @@ class ConflictSolving:
 							random.shuffle(jam_converted_diff)
 							for idx_waktu_start in jam_converted_diff:
 								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-								if (len(matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
-									# Search to next slot time
+								if (idx_room == ruang_awal and idx_waktu_start == waktu_awal):
 									continue
 								else:
 									# Check if the slot time match with matkul constraint
+									SKS = Jadwal.daftar_mata_kuliah[idx_matkul].sks
+									totalconflict = 0
+									for i in range(idx_waktu_start, idx_waktu_start + SKS):
+										panjang = len(matrix.matriks[idx_room][i]) + 1
+										totalconflict += (panjang * (panjang-1)) // 2
 									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
 									if (time_and_space_matchs): # Found the slot
-										found = True
-										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
+										if(minconf == -1 or minconf > totalconflict):
+											minconf = totalconflict
+											idx_matkul_selected = idx_matkul
+											ruang_awal_selected = ruang_awal
+											waktu_awal_selected = waktu_awal
+											idx_room_selected = idx_room
+											idx_waktu_start_selected = idx_waktu_start
+											if(minconf == 0):
+												found = True
 								if found:
 									break
 							if found:
@@ -185,6 +222,9 @@ class ConflictSolving:
 						break
 			if not found:
 				roundtrip += 1
+
+		if (minconf != -1):
+			cls.moveMatkul(matrix, list_idx, idx_matkul_selected, ruang_awal_selected, waktu_awal_selected, idx_room_selected, idx_waktu_start_selected)
 
 	@classmethod
 	def __init__(cls):
