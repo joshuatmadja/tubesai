@@ -109,7 +109,7 @@ class ConflictSolving:
 							# looping terhadap jam yang available, basis 120
 							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
 								# ngecek apakah dia udah diisi atau yang dia pilih itu pernah dipilih sebelumnya
-								if (len(matrix.matriks[idx_room][idx_waktu_start]) > 0 or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
+								if ((len(matrix.matriks[idx_room][idx_waktu_start]) > 0) or (idx_room == ruang_awal and idx_waktu_start == waktu_awal)):
 									# Search to next slot time
 									continue
 								else:
