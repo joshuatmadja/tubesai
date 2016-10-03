@@ -104,7 +104,7 @@ class ConflictSolving:
 						for idx_day in range(nDay):
 							# convert ke jam basis 120
 							jam_converted_start = cls.search_ruang_constraint(0, idx_room, idx_day)
-							jam_converted_end 	= cls.search_ruang_constraint(1, idx_room, idx_day)
+							jam_converted_end = cls.search_ruang_constraint(1, idx_room, idx_day)
 
 							# looping terhadap jam yang available, basis 120
 							for idx_waktu_start in range(jam_converted_start, jam_converted_end):
@@ -120,6 +120,8 @@ class ConflictSolving:
 										cls.moveMatkul(matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, idx_room, idx_waktu_start)
 								if found:
 									break
+							if found:
+								break
 						if found:
 							break
 					if found:
