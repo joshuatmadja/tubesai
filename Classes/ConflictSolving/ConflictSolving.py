@@ -44,7 +44,9 @@ class ConflictSolving:
 			if (w_selected >= batas_waktu_awal and w_selected + matkul_selected.sks <= batas_waktu_akhir and (matkul_selected.ruangan == '-' or Jadwal.daftar_ruangan[r_selected].nama == matkul_selected.ruangan)):
 				return True
 
-#			# assumption : len(matkul_selected.ruangan) > 1
+			# assumption : len(matkul_selected.ruangan) == 1
+
+			# assumption : len(matkul_selected.ruangan) > 1
 #			for idx_hari in range(len(matkul_selected.ruangan)):
 #				if (y == matkul_selected.ruangan[idx_hari]):
 #					return 1
