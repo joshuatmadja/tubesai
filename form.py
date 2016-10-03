@@ -348,7 +348,7 @@ class form(Frame):
 		J = Jadwal(nama_file)
 		Assign() # ini harus dipisah sebenernya
 		self.convertJadwalToRoomsAndSchedules(J)
-		
+
 	# interface
 
 	def interfaceMatriks(self, M): #M merupakan Matriks
@@ -414,6 +414,7 @@ class form(Frame):
 		Genetic.run(100)
 		Genetic.sort()
 		M = Genetic.convertToMatriks(Genetic.best())
+		print ("Genetic CONFLICT = " + str(M.conflict_count()))
 		self.interfaceMatriks(M)
 		self.onClickShow()
 
@@ -422,6 +423,7 @@ class form(Frame):
 		HillClimbing.init()
 		HillClimbing.calculate()
 		HillClimbing.finishing()
+		print ("Hill Climbing CONFLICT = " + str(HillClimbing.matrix_hasil.conflict_count()))
 		self.interfaceMatriks(HillClimbing.matrix_hasil)
 		self.onClickShow()
 
@@ -430,6 +432,7 @@ class form(Frame):
 		SimulatedAnnealing.init()
 		SimulatedAnnealing.calculate()
 		SimulatedAnnealing.finishing()
+		print ("Simulated Annealing CONFLICT = " + str(SimulatedAnnealing.matrix_hasil.conflict_count()))
 		self.interfaceMatriks(SimulatedAnnealing.matrix_hasil)
 		self.onClickShow()
 
@@ -462,7 +465,7 @@ class result(Frame):
 		tabel = ttk.Treeview(self.parent, height=6)
 		tabel.grid(column=0, row=0,columnspan=2)
 		tabelScrollY = ttk.Scrollbar(self.parent,orient='vertical',command=tabel.yview).grid(column=2,row=0,sticky='ns')
-		tabelScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel.xview).grid(column=0,row=1,columnspan=2,sticky='ew')		
+		tabelScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel.xview).grid(column=0,row=1,columnspan=2,sticky='ew')
 		#tabel.configure(yscroll=tabelScroll.set)
 		Time1=('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00')
 		Time2= ('12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00')
@@ -477,7 +480,7 @@ class result(Frame):
 		tabel1=ttk.Treeview(self.parent,height=6)
 		tabel1.grid(column=0,row=2,columnspan=2)
 		tabel1ScrollY = ttk.Scrollbar(self.parent,orient='vertical',command=tabel1.yview).grid(column=2,row=2,sticky='ns')
-		tabel1ScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel1.xview).grid(column=0,row=3,columnspan=2,sticky='ew')		
+		tabel1ScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel1.xview).grid(column=0,row=3,columnspan=2,sticky='ew')
 		#tabel1.configure(yscroll=tabel1Scroll.set)
 		tabel1.column("#0",width=100)
 		tabel1.heading("#0",text="Ruangan")

@@ -3,6 +3,7 @@ from ..Base.Matriks import Matriks
 from ..Base.Jadwal import Jadwal
 from random import randint, shuffle, seed
 from math import ceil, floor
+from copy import deepcopy
 
 class Genetic:
     inputs = []
@@ -20,10 +21,8 @@ class Genetic:
     @classmethod
     def convertToMatriks(self, chromosome):
         M = Matriks(len(Jadwal.daftar_ruangan), 120)
-        #print ("CHROMOSOME : " + str(chromosome))
         idx = 0
         for mkot in chromosome:
-            #print ("MKOT " + str(mkot))
 
             awal = (mkot.h_selected-1) * 24 + (mkot.j_selected)
             for i in range(awal, awal + mkot.sks):
@@ -90,8 +89,7 @@ class Genetic:
         bnyk = int(ceil(panjang / 20))
         for i in range(bnyk):
             x = randint(0, panjang - 1)
-            #chromosome[x] = self.random_assign(x)
-        # bingung mau ganti hari juga apa gimana, soalnya ini pinginnya jadi lebih bagus gitu sih
+            chromosome[x] = self.random_assign(x)
 
     @classmethod
     def selectidx(self, n, fitness_total, r_num):
@@ -106,7 +104,6 @@ class Genetic:
 
     @classmethod
     def run(self, loops):
-
         for xxx in range(loops):
             fitness_total = []
             n = len(self.inputs)
@@ -139,14 +136,16 @@ class Genetic:
                     self.mutate(child)
 
                 self.result.append(child)
-            self.inputs = self.result
+            self.result.extend(self.inputs)
+            self.sort()
+            self.inputs = deepcopy(self.result[101:])
 
     @classmethod
     def init(self):
         seed()
         self.inputs = []
         self.result = []
-        banyak = 10
+        banyak = 100
         n = len(Jadwal.daftar_mata_kuliah)
         for i in range(banyak):
             self.inputs.append([])
@@ -164,7 +163,7 @@ class Genetic:
     @classmethod
     def sort(self):
         fitness_total = []
-        n = len(self.inputs)
+        n = len(self.result)
 
         for chromosome in self.result:
             fitness_total.append(self.fitness(chromosome))
