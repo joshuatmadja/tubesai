@@ -25,7 +25,7 @@ class form(Frame):
 		self.schedules = []
 		self.mulai()
 		self.jadwal = []
-		self.numberofConflicts = IntVar()
+		self.numberofConflicts = 0
 
 
 	def mulai(self):
@@ -167,10 +167,10 @@ class form(Frame):
 
 		self.entryFileVar = tkinter.StringVar()
 		self.entryFile = tkinter.Entry(self.parent, textvariable=self.entryFileVar, width=100).grid(column=0, row=5, columnspan=2, pady=(30,0))
-		path = os.path.abspath('Testcase.txt')
+		path = os.path.abspath('Testcase_1.txt')
 		self.entryFileVar.set(path)
 		buttonBrowse = tkinter.Button (self.parent, text=u"Telusuri", command=self.loadBerkas).grid(column=0, row=6, columnspan=2)
-		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang(self.entryFileVar.get())).grid(column=0,row=7, columnspan=2)
+		buttonRead = tkinter.Button(self.parent, text=u"Baca", command=self.bacaRuang).grid(column=0,row=7, columnspan=2)
 
 		printR = tkinter.Button(self.parent, text=u"Cetak Ruangan", command=self.onClickPrintRoom)
 		printR.grid(column=0, row=1,pady=(10,20))
@@ -261,7 +261,6 @@ class form(Frame):
 		dataPass = [self.nRoom, self.nSchedule, self.rooms, self.schedules, self.hasilPagi, self.hasilMalam, self.numberofConflicts]
 		app = Toplevel(self.parent)
 		childWindow = result(app, dataPass, self)
-		childWindow.geometry("800x600")
 		#app.title('Result')
 		#print(self.nRoom)
 
@@ -342,19 +341,21 @@ class form(Frame):
 		for i in range(self.nSchedule):
 			tempS = J.daftar_mata_kuliah[i]
 			self.schedules.append((tempS.nama, tempS.ruangan, tempS.jam_awal, tempS.jam_akhir, tempS.sks, tempS.hari))
-		print('Testcase berhasil dibaca')
+		
 
-	def bacaRuang(self, nama_file):
+	def bacaRuang(self):
+		nama_file=self.entryFileVar.get()
 		J = Jadwal(nama_file)
 		Assign() # ini harus dipisah sebenernya
 		self.convertJadwalToRoomsAndSchedules(J)
+		print('Testcase berhasil dibaca')
 
 	# interface
 
 	def interfaceMatriks(self, M): #M merupakan Matriks
 		self.hasilPagi = []
 		self.hasilMalam = []
-		self.numberofConflicts.set(M.conflict_count())
+		self.numberofConflicts=M.conflict_count()
 		for i in range(self.nRoom):
 			self.hasilPagi.append([])
 			self.hasilMalam.append([])
@@ -457,8 +458,7 @@ class result(Frame):
 		self.schedules = self.lists[3]
 		self.hasilPagi = self.lists[4]
 		self.hasilMalam = self.lists[5]
-		self.numberofConflicts=IntVar()
-		self.numberofConflicts.set(self.lists[6])
+		self.numberofConflicts=self.lists[6]
 
 		style = ttk.Style(self.parent)
 		style.configure('Treeview',rowheight=20)
@@ -470,7 +470,7 @@ class result(Frame):
 		Time1=('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00')
 		Time2= ('12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00')
 
-		tabel.column("#0",width=100)
+		tabel.column("#0",minwidth=100, width=100)
 		tabel.heading("#0", text="Ruangan")
 		tabel["columns"]=Time1
 		for d in Time1:
@@ -482,7 +482,7 @@ class result(Frame):
 		tabel1ScrollY = ttk.Scrollbar(self.parent,orient='vertical',command=tabel1.yview).grid(column=2,row=2,sticky='ns')
 		tabel1ScrollX = ttk.Scrollbar(self.parent,orient='horizontal',command=tabel1.xview).grid(column=0,row=3,columnspan=2,sticky='ew')
 		#tabel1.configure(yscroll=tabel1Scroll.set)
-		tabel1.column("#0",width=100)
+		tabel1.column("#0",width=100, minwidth=100)
 		tabel1.heading("#0",text="Ruangan")
 		tabel1["columns"]=Time2
 		for d in Time2:
@@ -504,8 +504,7 @@ class result(Frame):
 
 
 		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=4, sticky="e")
-		labelNumOfConflicts = tkinter.Label(self.parent, textvariable=self.numberofConflicts).grid(column=1, row=4, sticky="w")
-		self.numberofConflicts.set(0)
+		labelNumOfConflicts = tkinter.Label(self.parent, text=self.numberofConflicts).grid(column=1, row=4, sticky="w")
 
 
 if __name__ == "__main__":
