@@ -378,8 +378,27 @@ class form(Frame):
 				for k in range(12):
 					if(self.hasilPagi[i][j][k] == []):
 						self.hasilPagi[i][j][k] = '-'
+					else:
+						tempstr = ""
+						n = len(self.hasilPagi[i][j][k])
+						for l in range(n):
+							if(tempstr != ''):
+								tempstr += '\n'
+							tempstr += self.hasilPagi[i][j][k][l]
+						self.hasilPagi[i][j][k] = []
+						self.hasilPagi[i][j][k].append(tempstr)
+
 					if(self.hasilMalam[i][j][k] == []):
 						self.hasilMalam[i][j][k] = '-'
+					else:
+						tempstr = ""
+						n = len(self.hasilMalam[i][j][k])
+						for l in range(n):
+							if(tempstr != ''):
+								tempstr += '\n'
+							tempstr += self.hasilMalam[i][j][k][l]
+						self.hasilMalam[i][j][k] = []
+						self.hasilMalam[i][j][k].append(tempstr)
 
 		for i in range(self.nRoom):
 			for j in range(5):
