@@ -1,6 +1,7 @@
 from .Jadwal import Jadwal
 from .MatKulOnlyTime import MatKulOnlyTime
 from .Matriks import Matriks
+from copy import deepcopy
 class Assign:
 	daftar_matkul_time = []
 
@@ -17,10 +18,10 @@ class Assign:
 		selisih = jam_akhir - jam_awal
 		hitung = 0
 		for i in range(selisih):
-			if not cls.matriks[ruang][jam_awal+i]:
+			if len(cls.matriks.matriks[ruang][jam_awal+i]) == 0:
 				hitung += 1
 		return hitung
-		
+
 	@classmethod
 	def min_kosong(cls, daftar):
 		minim = 0
@@ -31,11 +32,11 @@ class Assign:
 
 	@classmethod
 	def cariruang(cls, matkul):
-		
+
 		temp_matkul_time = MatKulOnlyTime()
 		daftar_temp = []
 		daftar_kosong = []
-		if matkul.ruangan != '-':
+		if matkul.ruangan != '-': # ruangan udah ditentuin
 			idx = cls.nama_to_ruang_idx(matkul.ruangan)
 			ruang = Jadwal.daftar_ruangan[idx]
 			for hari in matkul.hari:
@@ -48,8 +49,9 @@ class Assign:
 							if kosong < 0:
 								kosong = abs(kosong) + 100
 							daftar_kosong.append(kosong)
-							daftar_temp.append(temp_matkul_time)
-						
+							temp_masukin = deepcopy(temp_matkul_time)
+							daftar_temp.append(temp_masukin)
+
 		else:
 			n = len(Jadwal.daftar_ruangan)
 			for idx in range(n):
@@ -64,20 +66,21 @@ class Assign:
 								if kosong < 0:
 									kosong = abs(kosong) + 100
 								daftar_kosong.append(kosong)
-								daftar_temp.append(temp_matkul_time)
-						
-		minim = cls.min_kosong(kosong)
-		temp_matkul_time_final = temp_matkul_time[minim]
+								temp_masukin = deepcopy(temp_matkul_time)
+								daftar_temp.append(temp_masukin)
+
+		minim = cls.min_kosong(daftar_kosong)
+		temp_matkul_time_final = daftar_temp[minim]
 		cls.daftar_matkul_time.append(temp_matkul_time_final)
-		
+
 		c = (temp_matkul_time_final.h_selected - 1) * 24 + temp_matkul_time_final.j_selected
 		for i in range(temp_matkul_time_final.sks):
-			cls.matriks(temp_matkul_time_final.r_selected, c+i)
-							
-								
+			tempmatkul = deepcopy(matkul)
+			cls.matriks.matriks[temp_matkul_time_final.r_selected][c+i].append(tempmatkul)
+
 	@classmethod
 	def __init__(cls):
-		cls.matriks = Matriks()
+		cls.matriks = Matriks(len(Jadwal.daftar_ruangan), 120)
 		cls.daftar_matkul_time = []
 		for matkul in Jadwal.daftar_mata_kuliah:
 			cls.cariruang(matkul)
