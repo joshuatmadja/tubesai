@@ -41,7 +41,7 @@ class Genetic:
     def random_assign(self, x):
 
         bisa = False
-        MBaru = MatKulOnlyTime()
+        MBaru = MatKulOnlyTime(x)
         COMB_PER_HARI = Jadwal.daftar_mata_kuliah[x].jam_akhir - Jadwal.daftar_mata_kuliah[x].jam_awal - Jadwal.daftar_mata_kuliah[x].sks + 1
         JUMLAH_HARI = len(Jadwal.daftar_mata_kuliah[x].hari)
         comb_waktu = COMB_PER_HARI * JUMLAH_HARI
@@ -69,18 +69,21 @@ class Genetic:
                         MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
                         break
         else:
-            ruangan_selected = -1
+
             for idxruangan in range(len(Jadwal.daftar_ruangan)):
+                assigned = False
                 if(Jadwal.daftar_ruangan[idxruangan].nama == Jadwal.daftar_mata_kuliah[x].ruangan):
                     ruangan_selected = idxruangan
-            for z in urut_waktu:
-                hari_selected = Jadwal.daftar_mata_kuliah[x].hari[floor(z / COMB_PER_HARI)]
-                jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI)
+                    for z in urut_waktu:
+                        hari_selected = Jadwal.daftar_mata_kuliah[x].hari[floor(z / COMB_PER_HARI)]
+                        jam_selected = Jadwal.daftar_mata_kuliah[x].jam_awal + (z % COMB_PER_HARI)
 
-                temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
-                if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.jam_awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.jam_akhir):
-                    MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
-                    break
+                        temp_ruangan = Jadwal.daftar_ruangan[ruangan_selected]
+                        if(hari_selected in temp_ruangan.hari and jam_selected >= temp_ruangan.jam_awal and jam_selected + Jadwal.daftar_mata_kuliah[x].sks <= temp_ruangan.jam_akhir):
+                            MBaru.setTime(ruangan_selected, jam_selected, hari_selected, Jadwal.daftar_mata_kuliah[x].sks)
+                            break
+                    if assigned:
+                        break
         return MBaru
 
     @classmethod

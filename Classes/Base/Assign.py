@@ -6,14 +6,6 @@ class Assign:
 	daftar_matkul_time = []
 
 	@classmethod
-	def nama_to_ruang_idx(cls,nama):
-		n  = len(Jadwal.daftar_ruangan)
-		for idx in range(n):
-			if Jadwal.daftar_ruangan[idx].nama == nama:
-				return idx
-		return None
-
-	@classmethod
 	def hitung_kosong(cls, ruang, jam_awal, jam_akhir):
 		selisih = jam_akhir - jam_awal
 		hitung = 0
@@ -32,25 +24,28 @@ class Assign:
 
 	@classmethod
 	def cariruang(cls, matkul):
-
-		temp_matkul_time = MatKulOnlyTime()
 		daftar_temp = []
 		daftar_kosong = []
+		temp_matkul_time = MatKulOnlyTime(matkul.idmatkul)
 		if matkul.ruangan != '-': # ruangan udah ditentuin
-			idx = cls.nama_to_ruang_idx(matkul.ruangan)
-			ruang = Jadwal.daftar_ruangan[idx]
-			for hari in matkul.hari:
-				for haris in ruang.hari:
-					if hari == haris:
-						if max(matkul.jam_awal, ruang.jam_awal) + matkul.sks <= min(matkul.jam_akhir, ruang.jam_akhir):
-							temp_matkul_time.setTime(idx, max(matkul.jam_awal, ruang.jam_awal), hari, matkul.sks)
-							kosong = cls.hitung_kosong(temp_matkul_time.r_selected, temp_matkul_time.j_selected, min(matkul.jam_akhir, ruang.jam_akhir))
-							kosong = kosong - matkul.sks
-							if kosong < 0:
-								kosong = abs(kosong) + 100
-							daftar_kosong.append(kosong)
-							temp_masukin = deepcopy(temp_matkul_time)
-							daftar_temp.append(temp_masukin)
+			# tambahin looping aja didepannya
+			for ruangan in Jadwal.daftar_ruangan:
+				if ruangan.nama != matkul.ruangan:
+					continue
+				idx = ruangan.idruangan
+				ruang = Jadwal.daftar_ruangan[idx]
+				for hari in matkul.hari:
+					for haris in ruang.hari:
+						if hari == haris:
+							if max(matkul.jam_awal, ruang.jam_awal) + matkul.sks <= min(matkul.jam_akhir, ruang.jam_akhir):
+								temp_matkul_time.setTime(idx, max(matkul.jam_awal, ruang.jam_awal), hari, matkul.sks)
+								kosong = cls.hitung_kosong(temp_matkul_time.r_selected, temp_matkul_time.j_selected, min(matkul.jam_akhir, ruang.jam_akhir))
+								kosong = kosong - matkul.sks
+								if kosong < 0:
+									kosong = abs(kosong) + 100
+								daftar_kosong.append(kosong)
+								temp_masukin = deepcopy(temp_matkul_time)
+								daftar_temp.append(temp_masukin)
 
 		else:
 			n = len(Jadwal.daftar_ruangan)

@@ -1,5 +1,6 @@
 class MatKul:
-    def __init__(self, nama, ruangan, awal, akhir, sks, hari):
+    def __init__(self, idmatkul, nama, ruangan, awal, akhir, sks, hari):
+        self.idmatkul = idmatkul
         self.nama = nama
         self.ruangan = ruangan
         self.jam_awal = awal

@@ -57,13 +57,11 @@ class ConflictSolving:
 	@classmethod
 	def moveMatkul(cls, matrix, list_idx, idx_matkul, ruang_awal, waktu_awal, ruang_akhir, waktu_akhir):
 		SKS = Jadwal.daftar_mata_kuliah[idx_matkul].sks
-
-		nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
 		# delete matkul dari yang lama
 		for idx_waktu in range(waktu_awal, waktu_awal + SKS):
 			banyak_matkul_di_slot = len(matrix.matriks[ruang_awal][idx_waktu])
 			for j in range(banyak_matkul_di_slot):
-				if matrix.matriks[ruang_awal][idx_waktu][j].nama == nama_matkul:
+				if matrix.matriks[ruang_awal][idx_waktu][j].idmatkul == idx_matkul:
 					del matrix.matriks[ruang_awal][idx_waktu][j]
 					break
 
@@ -95,9 +93,8 @@ class ConflictSolving:
 					list_temp = matrix.matriks[ruang_awal][waktu_awal]
 					# nyari matkul yang mau diubah
 					conflicted_matkul = None
-					nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
 					for i in range(len(list_temp)):
-						if list_temp[i].nama == nama_matkul:
+						if list_temp[i].idmatkul == idx_matkul:
 							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
 
 					# nyari ruangan yang bisa diubah
@@ -118,11 +115,22 @@ class ConflictSolving:
 									continue
 								else:
 									# Check if the slot time match with matkul constraint
+									matkulsama = False
 									SKS = Jadwal.daftar_mata_kuliah[idx_matkul].sks
 									totalconflict = 0
 									for i in range(idx_waktu_start, idx_waktu_start + SKS):
-										panjang = len(matrix.matriks[idx_room][i]) + 1
-										totalconflict += (panjang * (panjang-1)) // 2
+										panjang = len(matrix.matriks[idx_room][i])
+										for j in range(panjang):
+											if(matrix.matriks[idx_room][i][j].nama == conflicted_matkul.nama and matrix.matriks[idx_room][i][j].idmatkul !=  conflicted_matkul.idmatkul):
+												matkulsama = True
+												break
+										if matkulsama:
+											break
+										totalconflict += (panjang * (panjang+1)) // 2
+
+									if matkulsama:
+										continue
+
 									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
 									if (time_and_space_matchs): # Found the slot
 										if(minconf == -1 or minconf > totalconflict):
@@ -167,9 +175,8 @@ class ConflictSolving:
 					list_temp = matrix.matriks[ruang_awal][waktu_awal]
 					# nyari matkul yang mau diubah
 					conflicted_matkul = None
-					nama_matkul = Jadwal.daftar_mata_kuliah[idx_matkul].nama
 					for i in range(len(list_temp)):
-						if list_temp[i].nama == nama_matkul:
+						if list_temp[i].idmatkul == idx_matkul:
 							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
 
 					# nyari ruangan yang bisa diubah
@@ -196,11 +203,21 @@ class ConflictSolving:
 									continue
 								else:
 									# Check if the slot time match with matkul constraint
+									matkulsama = False
 									SKS = Jadwal.daftar_mata_kuliah[idx_matkul].sks
 									totalconflict = 0
 									for i in range(idx_waktu_start, idx_waktu_start + SKS):
-										panjang = len(matrix.matriks[idx_room][i]) + 1
-										totalconflict += (panjang * (panjang-1)) // 2
+										panjang = len(matrix.matriks[idx_room][i])
+										for j in range(panjang):
+											if(matrix.matriks[idx_room][i][j].nama == conflicted_matkul.nama and matrix.matriks[idx_room][i][j].idmatkul !=  conflicted_matkul.idmatkul):
+												matkulsama = True
+												break
+										if matkulsama:
+											break
+										totalconflict += (panjang * (panjang+1)) // 2
+
+									if matkulsama:
+										continue
 									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
 									if (time_and_space_matchs): # Found the slot
 										if(minconf == -1 or minconf > totalconflict):

@@ -9,22 +9,24 @@ class Jadwal:
 
     @classmethod
     def process_ruangan_dan_mata_kuliah(self, ruangan_raw, mata_kuliah_raw):
-
+        idruangan = 0
         for ruangan in ruangan_raw:
             temp = ruangan.split(';')
             temp[3] = temp[3].split(',')
             for i in range(len(temp[3])):
                 temp[3][i] = int(temp[3][i])
-            temp_ruangan = Ruangan(temp[0], int(float(temp[1])), int(float(temp[2])), temp[3])
-
+            temp_ruangan = Ruangan(idruangan,temp[0], int(float(temp[1])), int(float(temp[2])), temp[3])
+            idruangan += 1
             self.daftar_ruangan.append(temp_ruangan)
 
+        idmatkul = 0
         for mata_kuliah in mata_kuliah_raw:
             temp = mata_kuliah.split(';')
             temp[5] = temp[5].split(',')
             for i in range(len(temp[5])):
                 temp[5][i] = int(temp[5][i])
-            temp_mata_kuliah = MatKul(temp[0], temp[1], int(float(temp[2])), int(float(temp[3])), int(temp[4]), temp[5])
+            temp_mata_kuliah = MatKul(idmatkul, temp[0], temp[1], int(float(temp[2])), int(float(temp[3])), int(temp[4]), temp[5])
+            idmatkul += 1
             self.daftar_mata_kuliah.append(temp_mata_kuliah)
 
         n = len(self.daftar_mata_kuliah)

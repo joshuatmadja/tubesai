@@ -1,5 +1,6 @@
 class MatKulOnlyTime:
-    def __init__(self):
+    def __init__(self, idmatkul):
+        self.idmatkul = idmatkul
         self.r_selected = -1
         self.j_selected = -1
         self.h_selected = -1
