@@ -21,7 +21,7 @@ class SimulatedAnnealing:
 		cooling_rate = cls.cooling_rate
 		least_conflict = cls.least_conflict
 
-		while temperature > 1 and least_conflict > 0:
+		while temperature > 0.01 and least_conflict > 0:
 			# Create new Matriks for swapping & conflict_count comparison
 			new_solution = deepcopy(matrix_not_random_cur)
 			list_idx = deepcopy(list_idx_not_random_cur)
@@ -45,7 +45,7 @@ class SimulatedAnnealing:
 		cooling_rate = cls.cooling_rate
 		least_conflict = cls.least_conflict
 
-		while temperature > 1 and least_conflict > 0:
+		while temperature > 0.01 and least_conflict > 0:
 			# Create new Matriks for swapping & conflict_count comparison
 			new_solution = deepcopy(matrix_random_cur)
 			list_idx = deepcopy(list_idx_random_cur)

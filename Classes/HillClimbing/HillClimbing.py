@@ -45,7 +45,7 @@ class HillClimbing:
 			next_conflict = matrix.conflict_count()
 			if (next_conflict >= curr_conflict_random):
 				cnt += 1
-			else:
+			else:	
 				cnt = 0
 				curr_conflict_random = next_conflict
 				matrix_random_best = copy.deepcopy(matrix)

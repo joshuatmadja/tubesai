@@ -80,7 +80,7 @@ class ConflictSolving:
 		# cek muter
 		roundtrip = 0
 		found = False
-		minconf = -1
+		minconf = -1000000000
 		idx_matkul_selected = -1
 		ruang_awal_selected = -1
 		waktu_awal_selected = -1
@@ -90,14 +90,19 @@ class ConflictSolving:
 			for idx_matkul in range(len(list_idx)):
 				ruang_awal, waktu_awal = list_idx[idx_matkul] # extract the tuple
 				if (len(matrix.matriks[ruang_awal][waktu_awal]) > 1):
+
 					list_temp = matrix.matriks[ruang_awal][waktu_awal]
 					# nyari matkul yang mau diubah
 					conflicted_matkul = None
 					for i in range(len(list_temp)):
 						if list_temp[i].idmatkul == idx_matkul:
 							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
-
 					# nyari ruangan yang bisa diubah
+					first_conflict = 0
+					for i in range(waktu_awal, waktu_awal + conflicted_matkul.sks):
+						panjang = len(matrix.matriks[ruang_awal][i])
+						first_conflict += (panjang * (panjang-1)) // 2
+
 					nRoom = len(Jadwal.daftar_ruangan)
 					for idx_room in range(nRoom):
 						# Constraint slot waktu di matrix sesuai constraint ruangan
@@ -133,15 +138,13 @@ class ConflictSolving:
 
 									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
 									if (time_and_space_matchs): # Found the slot
-										if(minconf == -1 or minconf > totalconflict):
-											minconf = totalconflict
+										if(minconf < first_conflict - totalconflict):
+											minconf = first_conflict - totalconflict
 											idx_matkul_selected = idx_matkul
 											ruang_awal_selected = ruang_awal
 											waktu_awal_selected = waktu_awal
 											idx_room_selected = idx_room
 											idx_waktu_start_selected = idx_waktu_start
-											if(minconf == 0):
-												found = True
 								if found:
 									break
 							if found:
@@ -153,7 +156,7 @@ class ConflictSolving:
 			if not found:
 				roundtrip += 1
 
-		if (minconf != -1):
+		if (minconf != -1000000000):
 			cls.moveMatkul(matrix, list_idx, idx_matkul_selected, ruang_awal_selected, waktu_awal_selected, idx_room_selected, idx_waktu_start_selected)
 
 	@classmethod
@@ -162,14 +165,16 @@ class ConflictSolving:
 		# Using random to choose which slot will system try to place the conflicted_matkul
 		roundtrip = 0
 		found = False
-		minconf = -1
+		minconf = -1000000000
 		idx_matkul_selected = -1
 		ruang_awal_selected = -1
 		waktu_awal_selected = -1
 		idx_room_selected = -1
 		idx_waktu_start_selected = -1
 		while (roundtrip != 2 and (not found)):
-			for idx_matkul in range(len(list_idx)):
+			nmatkul = list(range(len(list_idx)))
+			random.shuffle(nmatkul)
+			for idx_matkul in nmatkul:
 				ruang_awal, waktu_awal = list_idx[idx_matkul] # extract the tuple
 				if (len(matrix.matriks[ruang_awal][waktu_awal]) > 1):
 					list_temp = matrix.matriks[ruang_awal][waktu_awal]
@@ -179,6 +184,10 @@ class ConflictSolving:
 						if list_temp[i].idmatkul == idx_matkul:
 							conflicted_matkul = copy.deepcopy(Jadwal.daftar_mata_kuliah[idx_matkul])
 
+					first_conflict = 0
+					for i in range(waktu_awal, waktu_awal + conflicted_matkul.sks):
+						panjang = len(matrix.matriks[ruang_awal][i])
+						first_conflict += (panjang * (panjang-1)) // 2
 					# nyari ruangan yang bisa diubah
 					# Randomize idx_room
 					nRoom = list(range(len(Jadwal.daftar_ruangan)))
@@ -220,15 +229,13 @@ class ConflictSolving:
 										continue
 									time_and_space_matchs = cls.check_matkul_constraint(conflicted_matkul, idx_room, idx_waktu_start)
 									if (time_and_space_matchs): # Found the slot
-										if(minconf == -1 or minconf > totalconflict):
-											minconf = totalconflict
+										if(minconf < first_conflict - totalconflict):
+											minconf = first_conflict - totalconflict
 											idx_matkul_selected = idx_matkul
 											ruang_awal_selected = ruang_awal
 											waktu_awal_selected = waktu_awal
 											idx_room_selected = idx_room
 											idx_waktu_start_selected = idx_waktu_start
-											if(minconf == 0):
-												found = True
 								if found:
 									break
 							if found:
@@ -240,10 +247,9 @@ class ConflictSolving:
 			if not found:
 				roundtrip += 1
 
-		if (minconf != -1):
+		if (minconf != -1000000000):
 			cls.moveMatkul(matrix, list_idx, idx_matkul_selected, ruang_awal_selected, waktu_awal_selected, idx_room_selected, idx_waktu_start_selected)
 
 	@classmethod
 	def __init__(cls):
 		seed()
-		pass
