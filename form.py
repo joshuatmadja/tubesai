@@ -381,6 +381,8 @@ class form(Frame):
 		self.numberofConflicts=M.conflict_count()
 		self.freePercentage = self.space_percentage(M)
 
+		for i in range(M.matriks[i]):
+
 		for i in range(self.nRoom):
 			self.hasilPagi.append([])
 			self.hasilMalam.append([])
@@ -392,13 +394,18 @@ class form(Frame):
 					self.hasilMalam[i][j].append([])
 
 		for i in range(self.nRoom):
+			idx = i
+			for j in range(i):
+				if(self.rooms[j][0] == self.rooms[i][0]):
+					idx = j
+					break
 			for j in range(120):
 				hari = floor(j / 24)
 				jam = j % 24
 				if(jam < 12):
-					self.hasilPagi[i][hari][jam] = M.matriks[i][j]
+					self.hasilPagi[idx][hari][jam] = M.matriks[i][j]
 				else:
-					self.hasilMalam[i][hari][jam-12] = M.matriks[i][j]
+					self.hasilMalam[idx][hari][jam-12] = M.matriks[i][j]
 
 		for i in range(self.nRoom):
 			for j in range(5):
@@ -536,6 +543,7 @@ class result(Frame):
 					tabel.insert(idRuang,i,text=d,values=self.hasilPagi[j][i]) # hasil pagi
 					tabel1.insert(idRuang,i,text=d,values=self.hasilMalam[j][i]) # hasil malam
 					i+=1
+				
 
 
 		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=4, sticky="e")
