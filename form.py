@@ -523,13 +523,19 @@ class result(Frame):
 			namaRuang = self.rooms[j][0]
 			idRuang = "r"+str(j)
 			print(idRuang)
-			tabel.insert("", j, idRuang, text=namaRuang)
-			tabel1.insert("", j, idRuang, text=namaRuang)
-			i=0
-			for d in Days:
-				tabel.insert(idRuang,i,text=d,values=self.hasilPagi[j][i]) # hasil pagi
-				tabel1.insert(idRuang,i,text=d,values=self.hasilMalam[j][i]) # hasil malam
-				i+=1
+			exists=0
+			for z in range(j):
+				if(self.rooms[z][0]==self.rooms[j][0]):
+					exists=1
+					break
+			if(exists==0):
+				tabel.insert("", j, idRuang, text=namaRuang)
+				tabel1.insert("", j, idRuang, text=namaRuang)
+				i=0
+				for d in Days:
+					tabel.insert(idRuang,i,text=d,values=self.hasilPagi[j][i]) # hasil pagi
+					tabel1.insert(idRuang,i,text=d,values=self.hasilMalam[j][i]) # hasil malam
+					i+=1
 
 
 		labelKonflik = tkinter.Label(self.parent, text=u"Number of Conflicts: ").grid(column=0, row=4, sticky="e")
