@@ -108,6 +108,7 @@ class Genetic:
     @classmethod
     def run(self, loops):
         for xxx in range(loops):
+            print (xxx)
             fitness_total = []
             n = len(self.inputs)
 

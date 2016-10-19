@@ -12,6 +12,7 @@ class HillClimbing:
 		curr_conflict_not_random = cls.curr_conflict
 		cnt = 0
 		while cnt < 10:
+			print (curr_conflict_not_random)
 			matrix = copy.deepcopy(matrix_nrb)
 			list_idx = copy.deepcopy(list_idx_nrb)
 
@@ -35,6 +36,7 @@ class HillClimbing:
 		curr_conflict_random = cls.curr_conflict
 		cnt = 0
 		while cnt < 10:
+			print (curr_conflict_random)
 			matrix = copy.deepcopy(matrix_random_best)
 			list_idx = copy.deepcopy(list_idx_random_best)
 
@@ -45,7 +47,7 @@ class HillClimbing:
 			next_conflict = matrix.conflict_count()
 			if (next_conflict >= curr_conflict_random):
 				cnt += 1
-			else:	
+			else:
 				cnt = 0
 				curr_conflict_random = next_conflict
 				matrix_random_best = copy.deepcopy(matrix)
@@ -96,6 +98,7 @@ class HillClimbing:
 
 		cls.list_idx_best = []
 		nMatKul = len(Jadwal.daftar_mata_kuliah)
+
 		for i in range(nMatKul):
 			ruang = Assign.daftar_matkul_time[i].r_selected
 			waktu = (Assign.daftar_matkul_time[i].h_selected - 1) * 24 + Assign.daftar_matkul_time[i].j_selected

@@ -63,19 +63,30 @@ class Assign:
 								daftar_kosong.append(kosong)
 								temp_masukin = deepcopy(temp_matkul_time)
 								daftar_temp.append(temp_masukin)
+		if(len(daftar_temp) == 0):
+			cls.daftar_remove.append(matkul)
+		else:
+			minim = cls.min_kosong(daftar_kosong)
+			temp_matkul_time_final = daftar_temp[minim]
+			cls.daftar_matkul_time.append(temp_matkul_time_final)
 
-		minim = cls.min_kosong(daftar_kosong)
-		temp_matkul_time_final = daftar_temp[minim]
-		cls.daftar_matkul_time.append(temp_matkul_time_final)
-
-		c = (temp_matkul_time_final.h_selected - 1) * 24 + temp_matkul_time_final.j_selected
-		for i in range(temp_matkul_time_final.sks):
-			tempmatkul = deepcopy(matkul)
-			cls.matriks.matriks[temp_matkul_time_final.r_selected][c+i].append(tempmatkul)
+			c = (temp_matkul_time_final.h_selected - 1) * 24 + temp_matkul_time_final.j_selected
+			for i in range(temp_matkul_time_final.sks):
+				tempmatkul = deepcopy(matkul)
+				cls.matriks.matriks[temp_matkul_time_final.r_selected][c+i].append(tempmatkul)
 
 	@classmethod
 	def __init__(cls):
+		cls.daftar_remove = []
 		cls.matriks = Matriks(len(Jadwal.daftar_ruangan), 120)
 		cls.daftar_matkul_time = []
 		for matkul in Jadwal.daftar_mata_kuliah:
 			cls.cariruang(matkul)
+
+		for matkul in cls.daftar_remove:
+			Jadwal.daftar_mata_kuliah.remove(matkul)
+
+		cnt = 0
+		for matkul in Jadwal.daftar_mata_kuliah:
+			matkul.idmatkul = cnt
+			cnt += 1
